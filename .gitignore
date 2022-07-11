@@ -1,0 +1,34 @@
+# Node modules
+node_modules
+
+# Backup files
+*.bkp
+bkp.*
+
+# Macos stuff
+.DS_Store
+
+# Debug logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Npm cache
+.npm
+
+# Eslint cache
+.eslintcache
+
+# Output of 'npm pack'
+*.tgz
+
+# Build files
+dist
