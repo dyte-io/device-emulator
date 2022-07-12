@@ -3,7 +3,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "version": "1.0.0",
-  "description": "Adds Virtual Devices methods on MediaDevices class.",
+  "description": "Adds methods to emulated various devices on MediaDevices class.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint --ignore-path .gitignore --max-warnings 0 --ext .ts .",
