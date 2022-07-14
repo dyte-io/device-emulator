@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/dyte-in/device-emulator/compare/v1.0.0...v1.0.1) (2022-07-14)
+
+
+### Bug Fixes
+
+* source for continuous media streams ([7fa313e](https://github.com/dyte-in/device-emulator/commit/7fa313eeca56c51eee7bba04bbcf7379779c5de0))
+
 # 1.0.0 (2022-07-14)
 
 
