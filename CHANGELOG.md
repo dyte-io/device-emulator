@@ -1,0 +1,14 @@
+# 1.0.0 (2022-07-14)
+
+
+### Bug Fixes
+
+* constraints ([46c31d1](https://github.com/dyte-in/device-emulator/commit/46c31d1d7626e81ba4cfacd001ed694f1c5120ea))
+* typo ([f4921d8](https://github.com/dyte-in/device-emulator/commit/f4921d8379bf28f35de15ad71b3f380be933adcf))
+
+
+### Features
+
+* basic initial implementation ([3ea3263](https://github.com/dyte-in/device-emulator/commit/3ea32638da6a20e802fc14e335e6c261705cf558))
+* code structure ([91da4cc](https://github.com/dyte-in/device-emulator/commit/91da4cc35c3dc1a9f5449e77109040d011e27042))
+* implementation of emulator methods (wip) ([b0d6ecb](https://github.com/dyte-in/device-emulator/commit/b0d6ecb779c0411f44b5c2bc1c810f9814cafe75))
