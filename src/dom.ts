@@ -1,8 +1,7 @@
 declare global {
-    // TODO(alias-rahil): remove later after it's added in `lib.dom.d.ts`.
     interface HTMLMediaElement {
-        setSinkId(sinkId: string): Promise<void>;
-        captureStream(): MediaStream;
+        setSinkId(sinkId: string): Promise<void>; // TODO(alias-rahil): remove later after it's added in `lib.dom.d.ts`.
+        captureStream(): MediaStream; // TODO(alias-rahil): remove later after it's added in `lib.dom.d.ts`.
     }
 
     interface MediaDevices {
@@ -14,7 +13,10 @@ declare global {
         ): Promise<MediaStream>;
         addEmulatedDevice(
             kind: Exclude<MediaDeviceKind, 'audiooutput'>,
-            capabilities: Omit<MediaTrackCapabilities, 'deviceId' | 'groupId'>,
+            capabilities: Omit<
+                MediaTrackCapabilities & MediaTrackConstraints,
+                'deviceId' | 'groupId'
+            >,
         ): string;
         addEmulatedDevice(kind: 'audiooutput'): string;
         removeEmulatedDevice(emulatorDeviceId: string): undefined | MediaDeviceInfo;
@@ -23,9 +25,8 @@ declare global {
         emulatedDevices?: MediaDeviceInfo[];
     }
 
-    // TODO(alias-rahil): remove later after it's added in `lib.dom.d.ts`.
     interface InputDeviceInfo {
-        getCapabilities(): MediaTrackCapabilities;
+        getCapabilities(): MediaTrackCapabilities & MediaTrackConstraints;
     }
 
     interface EmulatedMediaStreamConstraints {

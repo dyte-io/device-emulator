@@ -46,10 +46,14 @@ const evaluateConstraints = async (
     }
 
     if (audioDevice) {
+        await audioTrack.applyConstraints((<InputDeviceInfo>audioDevice).getCapabilities());
+
         mediaStream.addTrack(audioTrack);
     }
 
     if (videoDevice) {
+        await videoTrack.applyConstraints((<InputDeviceInfo>videoDevice).getCapabilities());
+
         mediaStream.addTrack(videoTrack);
     }
 
@@ -70,7 +74,7 @@ function newSetSinkId(this: HTMLAudioElement, sinkId: string) {
 function addEmulatedDevice(
     this: MediaDevices,
     kind: MediaDeviceKind,
-    capabilities?: Omit<Omit<MediaTrackCapabilities, 'deviceId'>, 'groupId'>,
+    capabilities?: Omit<MediaTrackCapabilities & MediaTrackConstraints, 'deviceId' | 'groupId'>,
 ) {
     const groupId = 'emulated-device-group';
     const deviceId = crypto.randomUUID();
