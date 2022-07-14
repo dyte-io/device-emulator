@@ -2,6 +2,7 @@ declare global {
     // TODO(alias-rahil): remove later after it's added in `lib.dom.d.ts`.
     interface HTMLMediaElement {
         setSinkId(sinkId: string): Promise<void>;
+        captureStream(): MediaStream;
     }
 
     interface MediaDevices {
