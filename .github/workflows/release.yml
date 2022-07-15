@@ -24,7 +24,7 @@ jobs:
           scope: "@dyte-in"
 
       - name: Set NPM_TOKEN
-        run: echo "NPM_TOKEN=${{ secrets.NPM_TOKEN }}" >> $GITHUB_ENV
+        run: echo "NPM_TOKEN=${{ secrets.SEMANTIC_RELEASE_PAT }}" >> $GITHUB_ENV
 
       - name: Install dependencies
         run: npm install
@@ -33,7 +33,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_PAT }}
           NPM_TOKEN: ${{ secrets.SEMANTIC_RELEASE_PAT }}
-          NODE_AUTH_TOKEN: ${{ secrets.SEMANTIC_RELEASE_PAT }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           ENVIRONMENT: ${{ github.ref }}
           GHR: true
         run: npx semantic-release
