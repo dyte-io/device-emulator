@@ -37,3 +37,6 @@ jobs:
           ENVIRONMENT: ${{ github.ref }}
           GHR: true
         run: npx semantic-release
+
+      - name: publish
+        run: npm publish
