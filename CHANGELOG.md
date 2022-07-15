@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/dyte-in/device-emulator/compare/v1.3.0...v1.4.0) (2022-07-15)
+
+
+### Features
+
+* implement brickDevice method ([36184a2](https://github.com/dyte-in/device-emulator/commit/36184a2cd918c57a183e5bace4b64c02a897c349))
+
 # [1.3.0](https://github.com/dyte-in/device-emulator/compare/v1.2.0...v1.3.0) (2022-07-15)
 
 
