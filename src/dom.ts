@@ -7,8 +7,10 @@ declare global {
     interface EmulatedDeviceMeta {
         emulatedDevices: (MediaDeviceInfo | InputDeviceInfo)[];
 
-        deviceMediaStreamTrackMap: {
-            [deviceId: string]: MediaStreamTrack[];
+        meta: {
+            [deviceId: string]: {
+                tracks: MediaStreamTrack[];
+            };
         };
     }
 

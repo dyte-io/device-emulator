@@ -4,7 +4,7 @@ function extractMediaStreamTrack(stream: MediaStream) {
     const tracks = stream.getTracks();
 
     if (tracks.length !== 1) {
-        throw new Error('an unknown error occurred');
+        throw new DOMException('an unknown error occurred', 'ABORT_ERR');
     }
 
     return tracks[0];
@@ -27,7 +27,7 @@ function createVideoStreamTrack() {
     const stream = canvas.captureStream();
 
     if (!ctx) {
-        throw new Error('an unknown error occurred');
+        throw new DOMException('an unknown error occurred', 'ABORT_ERR');
     }
 
     setInterval(() => {
@@ -98,11 +98,11 @@ async function evaluateConstraints(
     );
 
     if (constraints.audio?.deviceId.exact && (!audioDevice || audioDevice.kind !== 'audioinput')) {
-        throw new Error('invalid audio device ID');
+        throw new OverconstrainedError('deviceId', 'invalid audio device ID');
     }
 
     if (constraints.video?.deviceId.exact && (!videoDevice || videoDevice.kind !== 'videoinput')) {
-        throw new Error('invalid video device ID');
+        throw new OverconstrainedError('deviceId', 'invalid video device ID');
     }
 
     if (audioDevice) {
@@ -112,7 +112,7 @@ async function evaluateConstraints(
             mediaStream,
             audioTrack,
             <InputDeviceInfo>audioDevice,
-            (<EmulatedDeviceMeta>meta).deviceMediaStreamTrackMap[audioDevice.deviceId],
+            (<EmulatedDeviceMeta>meta).meta[audioDevice.deviceId].tracks,
         );
     }
 
@@ -123,7 +123,7 @@ async function evaluateConstraints(
             mediaStream,
             videoTrack,
             <InputDeviceInfo>videoDevice,
-            (<EmulatedDeviceMeta>meta).deviceMediaStreamTrackMap[videoDevice.deviceId],
+            (<EmulatedDeviceMeta>meta).meta[videoDevice.deviceId].tracks,
         );
     }
 
@@ -163,18 +163,20 @@ function addEmulatedDevice(
         Object.setPrototypeOf(device, MediaDeviceInfo.prototype);
     }
 
-    const deviceMediaStreamTrackMap = {
-        [device.deviceId]: [],
+    const meta = {
+        [device.deviceId]: {
+            tracks: [],
+        },
     };
 
     if (!this.meta) {
         this.meta = {
             emulatedDevices: [device],
-            deviceMediaStreamTrackMap,
+            meta,
         };
     } else {
         this.meta.emulatedDevices.push(device);
-        this.meta.deviceMediaStreamTrackMap = deviceMediaStreamTrackMap;
+        this.meta.meta = meta;
     }
 
     this.dispatchEvent(new Event('devicechange'));
@@ -195,9 +197,9 @@ function removeEmulatedDevice(this: MediaDevices, emulatorDeviceId: string) {
         return false;
     }
 
-    this.meta.deviceMediaStreamTrackMap[emulatorDeviceId].forEach((track) => track.stop());
+    this.meta.meta[emulatorDeviceId].tracks.forEach((track) => track.stop());
     this.meta.emulatedDevices.splice(index, 1);
-    delete this.meta.deviceMediaStreamTrackMap[emulatorDeviceId];
+    delete this.meta.meta[emulatorDeviceId];
     this.dispatchEvent(new Event('devicechange'));
 
     return true;
