@@ -134,6 +134,8 @@ function addEmulatedDevice(
         this.emulatedDevices.push(device);
     }
 
+    this.dispatchEvent(new Event('devicechange'));
+
     return deviceId;
 }
 
@@ -147,6 +149,8 @@ function removeEmulatedDevice(this: MediaDevices, emulatorDeviceId: string) {
     if (index === -1) {
         return undefined;
     }
+
+    this.dispatchEvent(new Event('devicechange'));
 
     return this.emulatedDevices.splice(index, 1)[0];
 }
