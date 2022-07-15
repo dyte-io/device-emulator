@@ -10,6 +10,7 @@ declare global {
         meta: {
             [deviceId: string]: {
                 tracks: MediaStreamTrack[];
+                bricked: boolean;
             };
         };
     }

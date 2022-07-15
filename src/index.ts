@@ -4,7 +4,7 @@ function extractMediaStreamTrack(stream: MediaStream) {
     const tracks = stream.getTracks();
 
     if (tracks.length !== 1) {
-        throw new DOMException('an unknown error occurred', 'ABORT_ERR');
+        throw new DOMException('an unknown error occurred', 'UnknownError');
     }
 
     return tracks[0];
@@ -27,7 +27,7 @@ function createVideoStreamTrack() {
     const stream = canvas.captureStream();
 
     if (!ctx) {
-        throw new DOMException('an unknown error occurred', 'ABORT_ERR');
+        throw new DOMException('an unknown error occurred', 'UnknownError');
     }
 
     setInterval(() => {
@@ -106,6 +106,10 @@ async function evaluateConstraints(
     }
 
     if (audioDevice) {
+        if ((<EmulatedDeviceMeta>meta).meta[audioDevice.deviceId].bricked) {
+            throw new DOMException('Failed to allocate audiosource', 'NotReadableError');
+        }
+
         const audioTrack = createAudioStreamTrack();
 
         await registerMediaStreamTrack(
@@ -117,6 +121,10 @@ async function evaluateConstraints(
     }
 
     if (videoDevice) {
+        if ((<EmulatedDeviceMeta>meta).meta[videoDevice.deviceId].bricked) {
+            throw new DOMException('Failed to allocate videosource', 'NotReadableError');
+        }
+
         const videoTrack = createVideoStreamTrack();
 
         await registerMediaStreamTrack(
@@ -166,6 +174,7 @@ function addEmulatedDevice(
     const meta = {
         [device.deviceId]: {
             tracks: [],
+            bricked: false,
         },
     };
 
@@ -185,22 +194,34 @@ function addEmulatedDevice(
 }
 
 function removeEmulatedDevice(this: MediaDevices, emulatorDeviceId: string) {
-    if (!this.meta) {
-        return false;
-    }
-
-    const index = this.meta.emulatedDevices.findIndex(
+    const index = this.meta?.emulatedDevices.findIndex(
         (device) => device.deviceId === emulatorDeviceId,
     );
 
-    if (index === -1) {
+    if (index === undefined || index === -1) {
         return false;
     }
 
-    this.meta.meta[emulatorDeviceId].tracks.forEach((track) => track.stop());
-    this.meta.emulatedDevices.splice(index, 1);
-    delete this.meta.meta[emulatorDeviceId];
     this.dispatchEvent(new Event('devicechange'));
+    (<EmulatedDeviceMeta>this.meta).meta[emulatorDeviceId].tracks.forEach((track) => track.stop());
+    (<EmulatedDeviceMeta>this.meta).emulatedDevices.splice(index, 1);
+    delete (<EmulatedDeviceMeta>this.meta).meta[emulatorDeviceId];
+
+    return true;
+}
+
+function brickDevice(this: MediaDevices, emulatorDeviceId: string) {
+    const index = this.meta?.emulatedDevices.findIndex(
+        (device) => device.deviceId === emulatorDeviceId,
+    );
+
+    if (index === undefined || index === -1) {
+        return false;
+    }
+
+    (<EmulatedDeviceMeta>this.meta).meta[emulatorDeviceId].tracks.forEach((track) => track.stop());
+    (<EmulatedDeviceMeta>this.meta).meta[emulatorDeviceId].bricked = true;
+    (<EmulatedDeviceMeta>this.meta).meta[emulatorDeviceId].tracks.length = 0;
 
     return true;
 }
@@ -240,6 +261,7 @@ function newGetDisplayMedia(
 HTMLAudioElement.prototype.setSinkId = newSetSinkId;
 MediaDevices.prototype.addEmulatedDevice = addEmulatedDevice;
 MediaDevices.prototype.removeEmulatedDevice = removeEmulatedDevice;
+MediaDevices.prototype.brickDevice = brickDevice;
 MediaDevices.prototype.enumerateDevices = newEnumerateDevices;
 MediaDevices.prototype.getUserMedia = newGetUserMedia;
 MediaDevices.prototype.getDisplayMedia = newGetDisplayMedia;
