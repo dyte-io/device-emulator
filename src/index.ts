@@ -31,7 +31,13 @@ function createVideoStreamTrack() {
     }
 
     setInterval(() => {
-        ctx.putImageData(ctx.createImageData(canvas.width, canvas.height), 0, 0);
+        const imageData = ctx.createImageData(canvas.width, canvas.height);
+
+        for (let i = 0; i < imageData.data.length; i += 1) {
+            imageData.data[i] = Math.floor(Math.random() * 256);
+        }
+
+        ctx.putImageData(imageData, 0, 0);
     });
 
     return extractMediaStreamTrack(stream);
@@ -172,20 +178,20 @@ function addEmulatedDevice(
     }
 
     const meta = {
-        [device.deviceId]: {
-            tracks: [],
-            bricked: false,
-        },
+        tracks: [],
+        bricked: false,
     };
 
     if (!this.meta) {
         this.meta = {
             emulatedDevices: [device],
-            meta,
+            meta: {
+                [device.deviceId]: meta,
+            },
         };
     } else {
         this.meta.emulatedDevices.push(device);
-        this.meta.meta = meta;
+        this.meta.meta[device.deviceId] = meta;
     }
 
     this.dispatchEvent(new Event('devicechange'));
