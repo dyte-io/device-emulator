@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/dyte-in/device-emulator/compare/v1.1.5...v1.2.0) (2022-07-15)
+
+
+### Features
+
+* setup vite for compiling module ([9caa3a3](https://github.com/dyte-in/device-emulator/commit/9caa3a372d2a57918dfb01556ecc2a2fe9c73d84))
+
 ## [1.1.5](https://github.com/dyte-in/device-emulator/compare/v1.1.4...v1.1.5) (2022-07-15)
 
 
