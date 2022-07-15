@@ -1,5 +1,5 @@
 const config = {
-    '**/*.ts': () => ['npm run typecheck', 'npm run lint:fix'],
+    '**/*.ts': () => ['npm run build', 'npm run lint:fix'],
 };
 
 module.exports = config;

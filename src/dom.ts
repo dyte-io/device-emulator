@@ -1,5 +1,5 @@
 declare global {
-    interface HTMLMediaElement {
+    interface HTMLAudioElement {
         setSinkId(sinkId: string): Promise<void>;
     }
 

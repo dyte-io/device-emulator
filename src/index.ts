@@ -1,3 +1,5 @@
+import './dom';
+
 const extractMediaStreamTrack = (stream: MediaStream) => {
     const tracks = stream.getTracks();
 
