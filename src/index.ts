@@ -1,6 +1,6 @@
 import './dom';
 
-const extractMediaStreamTrack = (stream: MediaStream) => {
+function extractMediaStreamTrack(stream: MediaStream) {
     const tracks = stream.getTracks();
 
     if (tracks.length !== 1) {
@@ -8,9 +8,9 @@ const extractMediaStreamTrack = (stream: MediaStream) => {
     }
 
     return tracks[0];
-};
+}
 
-const createAudioStreamTrack = () => {
+function createAudioStreamTrack() {
     const ctx = new AudioContext();
     const osc = ctx.createOscillator();
     const dest = ctx.createMediaStreamDestination();
@@ -19,9 +19,9 @@ const createAudioStreamTrack = () => {
     osc.start();
 
     return extractMediaStreamTrack(dest.stream);
-};
+}
 
-const createVideoStreamTrack = () => {
+function createVideoStreamTrack() {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     const stream = canvas.captureStream();
@@ -35,27 +35,65 @@ const createVideoStreamTrack = () => {
     });
 
     return extractMediaStreamTrack(stream);
-};
+}
 
-const isEmulatedMediaStreamConstraints = (
+async function registerMediaStreamTrack(
+    stream: MediaStream,
+    mediaTrack: MediaStreamTrack,
+    device: InputDeviceInfo,
+    deviceTracks: MediaStreamTrack[],
+) {
+    const track = mediaTrack;
+    const { deviceId, groupId, ...capabilities } = device.getCapabilities();
+
+    await track.applyConstraints(capabilities);
+
+    const getConstraints = track.getConstraints.bind(track);
+    const getSettings = track.getSettings.bind(track);
+    const getCapabilities = track.getCapabilities.bind(track);
+
+    track.getConstraints = () => ({
+        ...getConstraints(),
+        deviceId,
+        groupId,
+    });
+
+    track.getSettings = () => ({
+        ...getSettings(),
+        deviceId,
+        groupId,
+    });
+
+    track.getCapabilities = () => ({
+        ...getCapabilities(),
+        deviceId,
+        groupId,
+    });
+
+    stream.addTrack(track);
+    deviceTracks.push(track);
+}
+
+function isEmulatedMediaStreamConstraints(
     constraints?:
         | MediaStreamConstraints
         | DisplayMediaStreamConstraints
         | EmulatedMediaStreamConstraints,
-): constraints is EmulatedMediaStreamConstraints =>
-    !!(<EmulatedMediaStreamConstraints | undefined>constraints)?.emulated;
+): constraints is EmulatedMediaStreamConstraints {
+    return !!(<EmulatedMediaStreamConstraints | undefined>constraints)?.emulated;
+}
 
-const evaluateConstraints = async (
-    devices: (MediaDeviceInfo | InputDeviceInfo)[] | undefined,
+async function evaluateConstraints(
     constraints: EmulatedMediaStreamConstraints,
-) => {
+    meta?: EmulatedDeviceMeta,
+) {
     const mediaStream = new MediaStream();
 
-    const audioDevice = devices?.find(
+    const audioDevice = meta?.emulatedDevices.find(
         (device) => device.deviceId === constraints.audio?.deviceId.exact,
     );
 
-    const videoDevice = devices?.find(
+    const videoDevice = meta?.emulatedDevices.find(
         (device) => device.deviceId === constraints.video?.deviceId.exact,
     );
 
@@ -69,30 +107,28 @@ const evaluateConstraints = async (
 
     if (audioDevice) {
         const audioTrack = createAudioStreamTrack();
-        const capabilities = (<InputDeviceInfo>audioDevice).getCapabilities();
 
-        delete capabilities.deviceId;
-        delete capabilities.groupId;
-
-        await audioTrack.applyConstraints(capabilities);
-
-        mediaStream.addTrack(audioTrack);
+        await registerMediaStreamTrack(
+            mediaStream,
+            audioTrack,
+            <InputDeviceInfo>audioDevice,
+            (<EmulatedDeviceMeta>meta).deviceMediaStreamTrackMap[audioDevice.deviceId],
+        );
     }
 
     if (videoDevice) {
         const videoTrack = createVideoStreamTrack();
-        const capabilities = (<InputDeviceInfo>videoDevice).getCapabilities();
 
-        delete capabilities.deviceId;
-        delete capabilities.groupId;
-
-        await videoTrack.applyConstraints(capabilities);
-
-        mediaStream.addTrack(videoTrack);
+        await registerMediaStreamTrack(
+            mediaStream,
+            videoTrack,
+            <InputDeviceInfo>videoDevice,
+            (<EmulatedDeviceMeta>meta).deviceMediaStreamTrackMap[videoDevice.deviceId],
+        );
     }
 
     return mediaStream;
-};
+}
 
 /* eslint-disable @typescript-eslint/unbound-method */
 const originalSetSinkId = HTMLAudioElement.prototype.setSinkId;
@@ -108,10 +144,7 @@ function newSetSinkId(this: HTMLAudioElement, sinkId: string) {
 function addEmulatedDevice(
     this: MediaDevices,
     kind: MediaDeviceKind,
-    capabilities?: Omit<
-        MediaTrackCapabilities & MediaTrackConstraints,
-        'deviceId' | 'groupId'
-    > | void,
+    capabilities?: EmulatedDeviceCapabilitiesInput | void,
 ) {
     const groupId = 'emulated-device-group';
     const deviceId = crypto.randomUUID();
@@ -130,10 +163,18 @@ function addEmulatedDevice(
         Object.setPrototypeOf(device, MediaDeviceInfo.prototype);
     }
 
-    if (!this.emulatedDevices) {
-        this.emulatedDevices = [device];
+    const deviceMediaStreamTrackMap = {
+        [device.deviceId]: [],
+    };
+
+    if (!this.meta) {
+        this.meta = {
+            emulatedDevices: [device],
+            deviceMediaStreamTrackMap,
+        };
     } else {
-        this.emulatedDevices.push(device);
+        this.meta.emulatedDevices.push(device);
+        this.meta.deviceMediaStreamTrackMap = deviceMediaStreamTrackMap;
     }
 
     this.dispatchEvent(new Event('devicechange'));
@@ -142,29 +183,34 @@ function addEmulatedDevice(
 }
 
 function removeEmulatedDevice(this: MediaDevices, emulatorDeviceId: string) {
-    if (!this.emulatedDevices) {
-        return undefined;
+    if (!this.meta) {
+        return false;
     }
 
-    const index = this.emulatedDevices.findIndex((device) => device.deviceId === emulatorDeviceId);
+    const index = this.meta.emulatedDevices.findIndex(
+        (device) => device.deviceId === emulatorDeviceId,
+    );
 
     if (index === -1) {
-        return undefined;
+        return false;
     }
 
+    this.meta.deviceMediaStreamTrackMap[emulatorDeviceId].forEach((track) => track.stop());
+    this.meta.emulatedDevices.splice(index, 1);
+    delete this.meta.deviceMediaStreamTrackMap[emulatorDeviceId];
     this.dispatchEvent(new Event('devicechange'));
 
-    return this.emulatedDevices.splice(index, 1)[0];
+    return true;
 }
 
 async function newEnumerateDevices(this: MediaDevices) {
     const realDevices = await originalEnumerateDevices.call(this);
 
-    if (!this.emulatedDevices) {
+    if (!this.meta) {
         return realDevices;
     }
 
-    return this.emulatedDevices.concat(realDevices);
+    return this.meta.emulatedDevices.concat(realDevices);
 }
 
 function newGetUserMedia(
@@ -172,7 +218,7 @@ function newGetUserMedia(
     constraints?: MediaStreamConstraints | EmulatedMediaStreamConstraints,
 ) {
     if (isEmulatedMediaStreamConstraints(constraints)) {
-        return evaluateConstraints(this.emulatedDevices, constraints);
+        return evaluateConstraints(constraints, this.meta);
     }
 
     return originalGetUserMedia.call(this, constraints);
@@ -183,7 +229,7 @@ function newGetDisplayMedia(
     constraints?: DisplayMediaStreamConstraints | EmulatedMediaStreamConstraints,
 ) {
     if (isEmulatedMediaStreamConstraints(constraints)) {
-        return evaluateConstraints(this.emulatedDevices, constraints);
+        return evaluateConstraints(constraints, this.meta);
     }
 
     return originalGetDisplayMedia.call(this, constraints);

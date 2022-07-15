@@ -1,10 +1,23 @@
 declare global {
+    type EmulatedDeviceCapabilitiesInput = Omit<
+        MediaTrackCapabilities & MediaTrackConstraints,
+        'deviceId' | 'groupId'
+    >;
+
+    interface EmulatedDeviceMeta {
+        emulatedDevices: (MediaDeviceInfo | InputDeviceInfo)[];
+
+        deviceMediaStreamTrackMap: {
+            [deviceId: string]: MediaStreamTrack[];
+        };
+    }
+
     interface HTMLAudioElement {
         setSinkId(sinkId: string): Promise<void>;
     }
 
     interface MediaDevices {
-        emulatedDevices?: (MediaDeviceInfo | InputDeviceInfo)[];
+        meta?: EmulatedDeviceMeta;
 
         getDisplayMedia(
             constraints?: DisplayMediaStreamConstraints | EmulatedMediaStreamConstraints,
@@ -17,16 +30,10 @@ declare global {
         addEmulatedDevice(kind: 'audiooutput'): string;
         addEmulatedDevice(
             kind: Exclude<MediaDeviceKind, 'audiooutput'>,
-            capabilities?: Omit<
-                MediaTrackCapabilities & MediaTrackConstraints,
-                'deviceId' | 'groupId'
-            >,
+            capabilities?: EmulatedDeviceCapabilitiesInput,
         ): string;
 
-        removeEmulatedDevice(
-            emulatorDeviceId: string,
-        ): undefined | MediaDeviceInfo | InputDeviceInfo;
-
+        removeEmulatedDevice(emulatorDeviceId: string): boolean;
         silenceTrack(emulatorDeviceId: string): void;
         brickDevice(emulatorDeviceId: string): void;
         enumerateDevices(): Promise<(MediaDeviceInfo | InputDeviceInfo)[]>;
