@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/dyte-in/device-emulator/compare/v1.2.0...v1.3.0) (2022-07-15)
+
+
+### Features
+
+* apply groupId and deviceId constraints ([56ee4e2](https://github.com/dyte-in/device-emulator/commit/56ee4e2cb2e836eb73124e2a289a32d0aaf02fe4))
+
 # [1.2.0](https://github.com/dyte-in/device-emulator/compare/v1.1.5...v1.2.0) (2022-07-15)
 
 
