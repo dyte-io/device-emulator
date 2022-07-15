@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/dyte-in/device-emulator/compare/v1.1.1...v1.1.2) (2022-07-15)
+
+
+### Bug Fixes
+
+* run npm publish ([be76cd0](https://github.com/dyte-in/device-emulator/commit/be76cd04e638a35c78c4d217b43dfa4ee30779a1))
+
 ## [1.1.1](https://github.com/dyte-in/device-emulator/compare/v1.1.0...v1.1.1) (2022-07-15)
 
 
