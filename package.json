@@ -2,7 +2,7 @@
   "name": "device-emulator",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Adds methods to emulate various devices on MediaDevices class.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

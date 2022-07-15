@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/dyte-in/device-emulator/compare/v1.0.1...v1.1.0) (2022-07-15)
+
+
+### Features
+
+* dispatch devicechange event ([1b421e5](https://github.com/dyte-in/device-emulator/commit/1b421e50a73ceb3d50f3ed1ca89d57345d1beed9))
+
 ## [1.0.1](https://github.com/dyte-in/device-emulator/compare/v1.0.0...v1.0.1) (2022-07-14)
 
 
