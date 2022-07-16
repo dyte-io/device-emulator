@@ -11,7 +11,7 @@ declare global {
     }
 
     interface EmulatedDeviceMeta {
-        emulatedDevices: (MediaDeviceInfo | InputDeviceInfo)[];
+        emulatedDevices: MediaDeviceInfo[];
 
         meta: {
             [deviceId: string]: EmulatedDeviceMetaProps;
@@ -19,6 +19,8 @@ declare global {
     }
 
     interface HTMLAudioElement {
+        sinkId: string;
+
         setSinkId(sinkId: string): Promise<void>;
     }
 
@@ -42,7 +44,6 @@ declare global {
         removeEmulatedDevice(emulatorDeviceId: string): boolean;
         silenceDevice(emulatorDeviceId: string): void;
         brickDevice(emulatorDeviceId: string): void;
-        enumerateDevices(): Promise<(MediaDeviceInfo | InputDeviceInfo)[]>;
     }
 
     interface InputDeviceInfo {

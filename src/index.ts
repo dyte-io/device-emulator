@@ -63,7 +63,7 @@ async function registerMediaStreamTrack(
     device: InputDeviceInfo,
     deviceTracks: MediaStreamTrack[],
 ) {
-    const track = mediaTrack;
+    const track = mediaTrack.clone();
     const { deviceId, groupId, ...capabilities } = device.getCapabilities();
 
     await track.applyConstraints(<MediaTrackConstraints>capabilities);
@@ -174,6 +174,20 @@ const originalGetDisplayMedia = MediaDevices.prototype.getDisplayMedia;
 /* eslint-enable @typescript-eslint/unbound-method */
 
 function newSetSinkId(this: HTMLAudioElement, sinkId: string) {
+    const emulatedDevice = navigator.mediaDevices.meta?.emulatedDevices.find(
+        (device) => device.deviceId === sinkId,
+    );
+
+    if (emulatedDevice) {
+        if (emulatedDevice.kind !== 'audiooutput') {
+            return Promise.reject(new TypeError('NotFoundError: Requested device not found'));
+        }
+
+        this.sinkId = sinkId;
+
+        return Promise.resolve();
+    }
+
     return originalSetSinkId.call(this, sinkId);
 }
 
