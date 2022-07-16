@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/dyte-in/device-emulator/compare/v1.4.0...v1.4.1) (2022-07-16)
+
+
+### Bug Fixes
+
+* canvas paint data ([d83da74](https://github.com/dyte-in/device-emulator/commit/d83da7438fab47598162183e62f0f1c8919227a1))
+
 # [1.4.0](https://github.com/dyte-in/device-emulator/compare/v1.3.0...v1.4.0) (2022-07-15)
 
 
