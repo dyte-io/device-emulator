@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/dyte-in/device-emulator/compare/v1.4.1...v1.5.0) (2022-07-16)
+
+
+### Features
+
+* implement silenceDevice method ([08f260d](https://github.com/dyte-in/device-emulator/commit/08f260d9c98ed0e448e10a1003cd4d6fa32cf957))
+
 ## [1.4.1](https://github.com/dyte-in/device-emulator/compare/v1.4.0...v1.4.1) (2022-07-16)
 
 

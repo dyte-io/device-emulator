@@ -2,7 +2,7 @@
   "name": "@dyte-in/device-emulator",
   "main": "dist/device-emulator.es.js",
   "types": "dist/index.d.ts",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "Adds methods to emulate various devices on MediaDevices class.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
