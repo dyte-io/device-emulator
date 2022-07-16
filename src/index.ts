@@ -4,7 +4,7 @@ function extractMediaStreamTrack(stream: MediaStream) {
     const tracks = stream.getTracks();
 
     if (tracks.length !== 1) {
-        throw new DOMException('an unknown error occurred', 'UnknownError');
+        throw new TypeError('UnknownError: an unknown error occurred');
     }
 
     return tracks[0];
@@ -35,7 +35,7 @@ function createVideoStreamTrack(props: EmulatedDeviceMetaProps) {
     const stream = canvas.captureStream();
 
     if (!ctx) {
-        throw new DOMException('an unknown error occurred', 'UnknownError');
+        throw new TypeError('UnknownError: an unknown error occurred');
     }
 
     setInterval(() => {
@@ -109,8 +109,12 @@ async function evaluateConstraints(
 ) {
     const mediaStream = new MediaStream();
 
+    if (!constraints.audio?.deviceId.exact && !constraints.video?.deviceId.exact) {
+        throw new TypeError('AbortError: At least one of audio and video must be requested');
+    }
+
     if (!meta) {
-        return mediaStream;
+        throw new TypeError('NotFoundError: No emulated devices found, please create one first');
     }
 
     const audioDevice = meta.emulatedDevices.find(
@@ -122,16 +126,16 @@ async function evaluateConstraints(
     );
 
     if (constraints.audio?.deviceId.exact && (!audioDevice || audioDevice.kind !== 'audioinput')) {
-        throw new OverconstrainedError('deviceId', 'invalid audio device ID');
+        throw new OverconstrainedError('deviceId', 'Invalid audio device ID');
     }
 
     if (constraints.video?.deviceId.exact && (!videoDevice || videoDevice.kind !== 'videoinput')) {
-        throw new OverconstrainedError('deviceId', 'invalid video device ID');
+        throw new OverconstrainedError('deviceId', 'Invalid video device ID');
     }
 
     if (audioDevice) {
         if (meta.meta[audioDevice.deviceId].bricked) {
-            throw new DOMException('Failed to allocate audiosource', 'NotReadableError');
+            throw new TypeError('NotReadableError: Failed to allocate audiosource');
         }
 
         const audioTrack = createAudioStreamTrack(meta.meta[audioDevice.deviceId]);
@@ -146,7 +150,7 @@ async function evaluateConstraints(
 
     if (videoDevice) {
         if (meta.meta[videoDevice.deviceId].bricked) {
-            throw new DOMException('Failed to allocate videosource', 'NotReadableError');
+            throw new TypeError('NotReadableError: Failed to allocate videosource');
         }
 
         const videoTrack = createVideoStreamTrack(meta.meta[videoDevice.deviceId]);
