@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/dyte-in/device-emulator/compare/v1.5.1...v1.6.0) (2022-07-16)
+
+
+### Features
+
+* implement setSinkId ([af45dca](https://github.com/dyte-in/device-emulator/commit/af45dca3a790e9bc772bc59bc5d4effd8986653a))
+
 ## [1.5.1](https://github.com/dyte-in/device-emulator/compare/v1.5.0...v1.5.1) (2022-07-16)
 
 
