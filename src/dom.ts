@@ -4,14 +4,17 @@ declare global {
         'deviceId' | 'groupId'
     >;
 
+    interface EmulatedDeviceMetaProps {
+        tracks: MediaStreamTrack[];
+        bricked: boolean;
+        silent: boolean;
+    }
+
     interface EmulatedDeviceMeta {
         emulatedDevices: (MediaDeviceInfo | InputDeviceInfo)[];
 
         meta: {
-            [deviceId: string]: {
-                tracks: MediaStreamTrack[];
-                bricked: boolean;
-            };
+            [deviceId: string]: EmulatedDeviceMetaProps;
         };
     }
 
@@ -37,13 +40,13 @@ declare global {
         ): string;
 
         removeEmulatedDevice(emulatorDeviceId: string): boolean;
-        silenceTrack(emulatorDeviceId: string): void;
+        silenceDevice(emulatorDeviceId: string): void;
         brickDevice(emulatorDeviceId: string): void;
         enumerateDevices(): Promise<(MediaDeviceInfo | InputDeviceInfo)[]>;
     }
 
     interface InputDeviceInfo {
-        getCapabilities(): MediaTrackCapabilities & MediaTrackConstraints;
+        getCapabilities(): MediaTrackCapabilities;
     }
 
     interface EmulatedMediaStreamConstraints {

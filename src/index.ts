@@ -10,18 +10,26 @@ function extractMediaStreamTrack(stream: MediaStream) {
     return tracks[0];
 }
 
-function createAudioStreamTrack() {
+function createAudioStreamTrack(props: EmulatedDeviceMetaProps) {
     const ctx = new AudioContext();
     const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
     const dest = ctx.createMediaStreamDestination();
 
-    osc.connect(dest);
+    osc.connect(gain);
+    gain.connect(dest);
     osc.start();
+
+    setInterval(() => {
+        if (gain.gain.value !== +!props.silent) {
+            gain.gain.value = +!props.silent;
+        }
+    });
 
     return extractMediaStreamTrack(dest.stream);
 }
 
-function createVideoStreamTrack() {
+function createVideoStreamTrack(props: EmulatedDeviceMetaProps) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     const stream = canvas.captureStream();
@@ -31,10 +39,16 @@ function createVideoStreamTrack() {
     }
 
     setInterval(() => {
-        const imageData = ctx.createImageData(canvas.width, canvas.height);
+        const imageData = new ImageData(canvas.width, canvas.height);
 
-        for (let i = 0; i < imageData.data.length; i += 1) {
-            imageData.data[i] = Math.floor(Math.random() * 256);
+        for (let i = 0; i < imageData.data.length; i += 4) {
+            if (!props.silent) {
+                imageData.data[i] = Math.floor(Math.random() * 256);
+                imageData.data[i + 1] = Math.floor(Math.random() * 256);
+                imageData.data[i + 2] = Math.floor(Math.random() * 256);
+            }
+
+            imageData.data[i + 3] = 256;
         }
 
         ctx.putImageData(imageData, 0, 0);
@@ -52,7 +66,7 @@ async function registerMediaStreamTrack(
     const track = mediaTrack;
     const { deviceId, groupId, ...capabilities } = device.getCapabilities();
 
-    await track.applyConstraints(capabilities);
+    await track.applyConstraints(<MediaTrackConstraints>capabilities);
 
     const getConstraints = track.getConstraints.bind(track);
     const getSettings = track.getSettings.bind(track);
@@ -95,11 +109,15 @@ async function evaluateConstraints(
 ) {
     const mediaStream = new MediaStream();
 
-    const audioDevice = meta?.emulatedDevices.find(
+    if (!meta) {
+        return mediaStream;
+    }
+
+    const audioDevice = meta.emulatedDevices.find(
         (device) => device.deviceId === constraints.audio?.deviceId.exact,
     );
 
-    const videoDevice = meta?.emulatedDevices.find(
+    const videoDevice = meta.emulatedDevices.find(
         (device) => device.deviceId === constraints.video?.deviceId.exact,
     );
 
@@ -112,32 +130,32 @@ async function evaluateConstraints(
     }
 
     if (audioDevice) {
-        if ((<EmulatedDeviceMeta>meta).meta[audioDevice.deviceId].bricked) {
+        if (meta.meta[audioDevice.deviceId].bricked) {
             throw new DOMException('Failed to allocate audiosource', 'NotReadableError');
         }
 
-        const audioTrack = createAudioStreamTrack();
+        const audioTrack = createAudioStreamTrack(meta.meta[audioDevice.deviceId]);
 
         await registerMediaStreamTrack(
             mediaStream,
             audioTrack,
             <InputDeviceInfo>audioDevice,
-            (<EmulatedDeviceMeta>meta).meta[audioDevice.deviceId].tracks,
+            meta.meta[audioDevice.deviceId].tracks,
         );
     }
 
     if (videoDevice) {
-        if ((<EmulatedDeviceMeta>meta).meta[videoDevice.deviceId].bricked) {
+        if (meta.meta[videoDevice.deviceId].bricked) {
             throw new DOMException('Failed to allocate videosource', 'NotReadableError');
         }
 
-        const videoTrack = createVideoStreamTrack();
+        const videoTrack = createVideoStreamTrack(meta.meta[videoDevice.deviceId]);
 
         await registerMediaStreamTrack(
             mediaStream,
             videoTrack,
             <InputDeviceInfo>videoDevice,
-            (<EmulatedDeviceMeta>meta).meta[videoDevice.deviceId].tracks,
+            meta.meta[videoDevice.deviceId].tracks,
         );
     }
 
@@ -180,6 +198,7 @@ function addEmulatedDevice(
     const meta = {
         tracks: [],
         bricked: false,
+        silent: false,
     };
 
     if (!this.meta) {
@@ -200,34 +219,60 @@ function addEmulatedDevice(
 }
 
 function removeEmulatedDevice(this: MediaDevices, emulatorDeviceId: string) {
-    const index = this.meta?.emulatedDevices.findIndex(
+    if (!this.meta) {
+        return false;
+    }
+
+    const index = this.meta.emulatedDevices.findIndex(
         (device) => device.deviceId === emulatorDeviceId,
     );
 
-    if (index === undefined || index === -1) {
+    if (index === -1) {
         return false;
     }
 
     this.dispatchEvent(new Event('devicechange'));
-    (<EmulatedDeviceMeta>this.meta).meta[emulatorDeviceId].tracks.forEach((track) => track.stop());
-    (<EmulatedDeviceMeta>this.meta).emulatedDevices.splice(index, 1);
-    delete (<EmulatedDeviceMeta>this.meta).meta[emulatorDeviceId];
+    this.meta.meta[emulatorDeviceId].tracks.forEach((track) => track.stop());
+    this.meta.emulatedDevices.splice(index, 1);
+    delete this.meta.meta[emulatorDeviceId];
+
+    return true;
+}
+
+function silenceDevice(this: MediaDevices, emulatorDeviceId: string) {
+    if (!this.meta) {
+        return false;
+    }
+
+    const index = this.meta.emulatedDevices.findIndex(
+        (device) => device.deviceId === emulatorDeviceId,
+    );
+
+    if (index === -1) {
+        return false;
+    }
+
+    this.meta.meta[emulatorDeviceId].silent = true;
 
     return true;
 }
 
 function brickDevice(this: MediaDevices, emulatorDeviceId: string) {
-    const index = this.meta?.emulatedDevices.findIndex(
-        (device) => device.deviceId === emulatorDeviceId,
-    );
-
-    if (index === undefined || index === -1) {
+    if (!this.meta) {
         return false;
     }
 
-    (<EmulatedDeviceMeta>this.meta).meta[emulatorDeviceId].tracks.forEach((track) => track.stop());
-    (<EmulatedDeviceMeta>this.meta).meta[emulatorDeviceId].bricked = true;
-    (<EmulatedDeviceMeta>this.meta).meta[emulatorDeviceId].tracks.length = 0;
+    const index = this.meta.emulatedDevices.findIndex(
+        (device) => device.deviceId === emulatorDeviceId,
+    );
+
+    if (index === -1) {
+        return false;
+    }
+
+    this.meta.meta[emulatorDeviceId].tracks.forEach((track) => track.stop());
+    this.meta.meta[emulatorDeviceId].bricked = true;
+    this.meta.meta[emulatorDeviceId].tracks.length = 0;
 
     return true;
 }
@@ -267,6 +312,7 @@ function newGetDisplayMedia(
 HTMLAudioElement.prototype.setSinkId = newSetSinkId;
 MediaDevices.prototype.addEmulatedDevice = addEmulatedDevice;
 MediaDevices.prototype.removeEmulatedDevice = removeEmulatedDevice;
+MediaDevices.prototype.silenceDevice = silenceDevice;
 MediaDevices.prototype.brickDevice = brickDevice;
 MediaDevices.prototype.enumerateDevices = newEnumerateDevices;
 MediaDevices.prototype.getUserMedia = newGetUserMedia;
