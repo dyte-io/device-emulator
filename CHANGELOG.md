@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/dyte-in/device-emulator/compare/v1.5.0...v1.5.1) (2022-07-16)
+
+
+### Bug Fixes
+
+* throw proper errors ([1f9cd75](https://github.com/dyte-in/device-emulator/commit/1f9cd7576f6c768f0c4c0ad0dd2f9d6d33cbe3c2))
+
 # [1.5.0](https://github.com/dyte-in/device-emulator/compare/v1.4.1...v1.5.0) (2022-07-16)
 
 
