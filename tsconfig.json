@@ -1,11 +1,11 @@
 {
     "compilerOptions": {
-        "target": "es2016",
+        "target": "es2022",
         "outDir": "dist",
         "declaration": true,
         "emitDeclarationOnly": true,
         "isolatedModules": true,
-        "module": "commonjs",
+        "module": "ES2022",
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "strict": true,

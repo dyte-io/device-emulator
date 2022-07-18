@@ -1,65 +1,56 @@
 declare global {
-    type EmulatedDeviceCapabilitiesInput = Omit<
-        MediaTrackCapabilities & MediaTrackConstraints,
-        'deviceId' | 'groupId'
-    >;
+    interface EmulatedAudioDeviceCapabilities {
+        [_: string]: never;
+    }
+
+    interface EmulatedVideoDeviceCapabilities {
+        height?: {
+            max?: number;
+        };
+        width?: {
+            max?: number;
+        };
+        frameRate?: {
+            max?: number;
+        };
+        facingMode?: string[];
+    }
 
     interface EmulatedDeviceMetaProps {
         tracks: MediaStreamTrack[];
         bricked: boolean;
         silent: boolean;
+        device: MediaDeviceInfo;
     }
 
     interface EmulatedDeviceMeta {
-        emulatedDevices: MediaDeviceInfo[];
-
-        meta: {
-            [deviceId: string]: EmulatedDeviceMetaProps;
-        };
-    }
-
-    interface HTMLAudioElement {
-        sinkId: string;
-
-        setSinkId(sinkId: string): Promise<void>;
+        [deviceId: string]: undefined | EmulatedDeviceMetaProps;
     }
 
     interface MediaDevices {
         meta?: EmulatedDeviceMeta;
-
-        getDisplayMedia(
-            constraints?: DisplayMediaStreamConstraints | EmulatedMediaStreamConstraints,
-        ): Promise<MediaStream>;
-
-        getUserMedia(
-            constraints?: MediaStreamConstraints | EmulatedMediaStreamConstraints,
-        ): Promise<MediaStream>;
+        removeEmulatedDevice(emulatorDeviceId: string): boolean;
+        silenceDevice(emulatorDeviceId: string): boolean;
+        brickDevice(emulatorDeviceId: string): boolean;
 
         addEmulatedDevice(kind: 'audiooutput'): string;
         addEmulatedDevice(
-            kind: Exclude<MediaDeviceKind, 'audiooutput'>,
-            capabilities?: EmulatedDeviceCapabilitiesInput,
+            kind: 'audioinput',
+            capabilities?: EmulatedAudioDeviceCapabilities,
         ): string;
-
-        removeEmulatedDevice(emulatorDeviceId: string): boolean;
-        silenceDevice(emulatorDeviceId: string): void;
-        brickDevice(emulatorDeviceId: string): void;
+        addEmulatedDevice(
+            kind: 'videoinput',
+            capabilities?: EmulatedVideoDeviceCapabilities,
+        ): string;
     }
 
     interface InputDeviceInfo {
-        getCapabilities(): MediaTrackCapabilities;
+        getCapabilities(): MediaTrackCapabilities; //
     }
 
-    interface EmulatedMediaStreamConstraints {
-        audio?: {
-            deviceId: { exact: string };
-        };
-
-        video?: {
-            deviceId: { exact: string };
-        };
-
-        emulated: true;
+    interface HTMLMediaElement {
+        sinkId: string; //
+        setSinkId(sinkId: string): Promise<void>; //
     }
 }
 
