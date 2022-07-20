@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/dyte-in/device-emulator/compare/v1.6.0...v1.7.0) (2022-07-20)
+
+
+### Features
+
+* major code refactoring ([5d571a1](https://github.com/dyte-in/device-emulator/commit/5d571a1e20142df9692e9501091d293b66baf8bd))
+
 # [1.6.0](https://github.com/dyte-in/device-emulator/compare/v1.5.1...v1.6.0) (2022-07-16)
 
 
