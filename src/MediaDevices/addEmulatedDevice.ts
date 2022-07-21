@@ -4,7 +4,7 @@ function addEmulatedDevice(
     capabilities?: EmulatedVideoDeviceCapabilities | EmulatedAudioDeviceCapabilities,
 ) {
     const deviceId = crypto.randomUUID();
-    const label = `Emulated device of kind \`${kind}\``;
+    const label = `Emulated device of ${kind} kind - ${deviceId}`;
     const groupId = 'emulated-device-group';
     const device = { deviceId, kind, label, groupId, toJSON: () => device };
 

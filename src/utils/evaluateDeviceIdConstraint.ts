@@ -21,7 +21,7 @@ function evaluateDeviceIdConstraint(
     }
 
     if (deviceMeta.device.kind !== `${kind}input`) {
-        throw new OverconstrainedError('deviceId', `Invalid ${kind} device ID`);
+        throw new OverconstrainedError('deviceId', `Invalid deviceId`);
     }
 
     if (deviceMeta.bricked) {

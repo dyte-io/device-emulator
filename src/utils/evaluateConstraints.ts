@@ -22,11 +22,11 @@ async function evaluateConstraints(
     const mediaStream = new MediaStream();
 
     if (emulatedConstraints.audio) {
-        await registerMediaStreamTrack(mediaStream, 'audio', emulatedConstraints, meta);
+        await registerMediaStreamTrack(mediaStream, emulatedConstraints, 'audio', meta);
     }
 
     if (emulatedConstraints.video) {
-        await registerMediaStreamTrack(mediaStream, 'video', emulatedConstraints, meta);
+        await registerMediaStreamTrack(mediaStream, emulatedConstraints, 'video', meta);
     }
 
     if (realConstraints.audio || realConstraints.video) {
