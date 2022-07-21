@@ -28,8 +28,6 @@ function evaluateDeviceIdConstraint(
         throw new TypeError(`NotReadableError: Failed to allocate ${kind}source`);
     }
 
-    delete (<MediaTrackConstraints>constraints).deviceId;
-
     // eslint-disable-next-line no-param-reassign
     emulatedConstraints[kind] = {
         ...constraints,
