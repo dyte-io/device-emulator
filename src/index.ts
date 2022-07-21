@@ -1,5 +1,7 @@
 import './dom';
 import './HTMLAudioElement/setSinkId';
+import './MediaDevices/audioCapabilities';
+import './MediaDevices/videoCapabilities';
 import './MediaDevices/addEmulatedDevice';
 import './MediaDevices/enumerateDevices';
 import './MediaDevices/getDisplayMedia';

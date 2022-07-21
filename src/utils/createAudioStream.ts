@@ -1,4 +1,4 @@
-function createAudioStreamTrack(props: EmulatedDeviceMetaProps) {
+function createAudioStream(props: EmulatedDeviceMetaProps) {
     const ctx = new AudioContext();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
@@ -17,4 +17,4 @@ function createAudioStreamTrack(props: EmulatedDeviceMetaProps) {
     return dest.stream;
 }
 
-export default createAudioStreamTrack;
+export default createAudioStream;

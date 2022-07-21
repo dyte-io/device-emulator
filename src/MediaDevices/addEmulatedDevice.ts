@@ -11,8 +11,28 @@ function addEmulatedDevice(
     if (kind === 'audioinput' || kind === 'videoinput') {
         Object.setPrototypeOf(device, InputDeviceInfo.prototype);
 
+        const defaultCapabilities =
+            kind === 'audioinput' ? this.audioCapabilities : this.videoCapabilities;
+
+        const otherCapabilities = {
+            height: {
+                max: capabilities?.height?.max,
+                min: defaultCapabilities.height?.min,
+            },
+            width: {
+                max: capabilities?.width?.max,
+                min: defaultCapabilities.width?.min,
+            },
+            frameRate: {
+                max: capabilities?.frameRate?.max,
+                min: defaultCapabilities.frameRate?.min,
+            },
+            facingMode: capabilities?.facingMode,
+        };
+
         (<InputDeviceInfo>device).getCapabilities = () => ({
-            ...capabilities,
+            ...defaultCapabilities,
+            ...otherCapabilities,
             deviceId: device.deviceId,
             groupId: device.groupId,
         });

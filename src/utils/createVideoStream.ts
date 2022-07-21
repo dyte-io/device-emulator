@@ -1,4 +1,4 @@
-function createVideoStreamTrack(props: EmulatedDeviceMetaProps) {
+function createVideoStream(props: EmulatedDeviceMetaProps) {
     const canvas = document.createElement('canvas');
     const capabilities = (<InputDeviceInfo>props.device).getCapabilities();
 
@@ -30,4 +30,4 @@ function createVideoStreamTrack(props: EmulatedDeviceMetaProps) {
     return canvas.captureStream(capabilities.frameRate?.max);
 }
 
-export default createVideoStreamTrack;
+export default createVideoStream;

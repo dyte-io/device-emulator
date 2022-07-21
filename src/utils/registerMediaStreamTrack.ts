@@ -1,7 +1,8 @@
-import createAudioStreamTrack from './createAudioStream';
-import createVideoStreamTrack from './createVideoStream';
+import createAudioStream from './createAudioStream';
+import createVideoStream from './createVideoStream';
 import evaluateFacingModeConstraint from './evaluateFacingModeConstraint';
 import evaluateGroupIdConstraint from './evaluateGroupIdConstraint';
+import extractTrack from './extractTrack';
 
 async function registerMediaStreamTrack(
     mediaStream: MediaStream,
@@ -12,14 +13,8 @@ async function registerMediaStreamTrack(
     const realConstraints = <MediaTrackConstraints>constraints[kind];
     const deviceId = <string>realConstraints.deviceId;
     const props = <EmulatedDeviceMetaProps>meta[deviceId];
-    const stream = (kind === 'audio' ? createAudioStreamTrack : createVideoStreamTrack)(props);
-    const tracks = stream.getTracks();
-
-    if (tracks.length !== 1) {
-        throw new TypeError('UnknownError: an unknown error occurred');
-    }
-
-    const track = tracks[0];
+    const stream = (kind === 'audio' ? createAudioStream : createVideoStream)(props);
+    const track = extractTrack(stream);
     let emulatedConstraints: MediaTrackConstraints = { deviceId: { exact: deviceId } };
     const allFacingModes = (<InputDeviceInfo>props.device).getCapabilities().facingMode;
 
