@@ -1,3 +1,10 @@
+## [1.9.1](https://github.com/dyte-in/device-emulator/compare/v1.9.0...v1.9.1) (2022-07-21)
+
+
+### Bug Fixes
+
+* default capabilities if input is not provided ([30b1699](https://github.com/dyte-in/device-emulator/commit/30b16995319d336de42e985f31dfbec527f69a13))
+
 # [1.9.0](https://github.com/dyte-in/device-emulator/compare/v1.8.0...v1.9.0) (2022-07-21)
 
 
