@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/dyte-in/device-emulator/compare/v1.8.0...v1.9.0) (2022-07-21)
+
+
+### Features
+
+* default device capabilities ([81b802c](https://github.com/dyte-in/device-emulator/commit/81b802c8b42f943bc9758fcb4d50098958c49e9b))
+
 # [1.8.0](https://github.com/dyte-in/device-emulator/compare/v1.7.0...v1.8.0) (2022-07-21)
 
 
