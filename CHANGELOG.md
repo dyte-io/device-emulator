@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/dyte-in/device-emulator/compare/v1.7.0...v1.8.0) (2022-07-21)
+
+
+### Features
+
+* override applyConstraints method ([b36f0f3](https://github.com/dyte-in/device-emulator/commit/b36f0f3a48eb1c45693e43c98eac51ad264d085e))
+
 # [1.7.0](https://github.com/dyte-in/device-emulator/compare/v1.6.0...v1.7.0) (2022-07-20)
 
 
