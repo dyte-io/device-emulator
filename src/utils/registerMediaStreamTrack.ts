@@ -15,7 +15,7 @@ async function registerMediaStreamTrack(
     const props = <EmulatedDeviceMetaProps>meta[deviceId];
     const stream = (kind === 'audio' ? createAudioStream : createVideoStream)(props);
     const track = extractTrack(stream);
-    let emulatedConstraints: MediaTrackConstraints = { deviceId: { exact: deviceId } };
+    const emulatedConstraints: MediaTrackConstraints = { deviceId: { exact: deviceId } };
     const allFacingModes = (<InputDeviceInfo>props.device).getCapabilities().facingMode;
 
     evaluateFacingModeConstraint(realConstraints, emulatedConstraints, props);
@@ -62,7 +62,9 @@ async function registerMediaStreamTrack(
     });
 
     track.applyConstraints = (mediaTrackConstraints?: MediaTrackConstraints) => {
-        emulatedConstraints = {};
+        Object.keys(emulatedConstraints).forEach((constraint) => {
+            delete emulatedConstraints[<keyof MediaTrackConstraints>constraint];
+        });
 
         if (!mediaTrackConstraints) {
             return applyConstraints(mediaTrackConstraints);

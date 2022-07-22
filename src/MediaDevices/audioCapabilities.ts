@@ -2,7 +2,7 @@ import extractTrack from '../utils/extractTrack';
 
 function createAudioStream() {
     const ctx = new AudioContext();
-    const dest = ctx.createMediaStreamDestination();
+    const dest = new MediaStreamAudioDestinationNode(ctx);
 
     return dest.stream;
 }

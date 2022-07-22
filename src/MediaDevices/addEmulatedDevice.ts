@@ -45,6 +45,7 @@ function addEmulatedDevice(
         bricked: false,
         silent: false,
         device,
+        eventTarget: new EventTarget(),
     };
 
     if (!this.meta) {

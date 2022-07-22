@@ -21,6 +21,7 @@ declare global {
         bricked: boolean;
         silent: boolean;
         device: MediaDeviceInfo;
+        eventTarget: EventTarget;
     }
 
     interface EmulatedDeviceMeta {
@@ -33,7 +34,9 @@ declare global {
         videoCapabilities: MediaTrackCapabilities;
         removeEmulatedDevice(emulatorDeviceId: string): boolean;
         silenceDevice(emulatorDeviceId: string): boolean;
+        unsilenceDevice(emulatorDeviceId: string): boolean;
         brickDevice(emulatorDeviceId: string): boolean;
+        unbrickDevice(emulatorDeviceId: string): boolean;
 
         addEmulatedDevice(kind: 'audiooutput'): string;
         addEmulatedDevice(

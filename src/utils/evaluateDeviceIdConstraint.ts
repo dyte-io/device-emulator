@@ -10,15 +10,11 @@ function evaluateDeviceIdConstraint(
         (<ConstrainDOMStringParameters | undefined>constraints?.deviceId)?.exact
     );
 
-    if (!deviceId) {
-        return;
-    }
+    if (!deviceId) return;
 
     const deviceMeta = meta[deviceId];
 
-    if (!deviceMeta) {
-        return;
-    }
+    if (!deviceMeta) return;
 
     if (deviceMeta.device.kind !== `${kind}input`) {
         throw new OverconstrainedError('deviceId', `Invalid deviceId`);

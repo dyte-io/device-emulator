@@ -8,4 +8,6 @@ import './MediaDevices/getDisplayMedia';
 import './MediaDevices/getUserMedia';
 import './MediaDevices/removeEmulatedDevice';
 import './MediaDevices/silenceDevice';
+import './MediaDevices/unsilenceDevice';
 import './MediaDevices/brickDevice';
+import './MediaDevices/unbrickDevice';
