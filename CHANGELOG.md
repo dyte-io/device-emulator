@@ -1,3 +1,10 @@
+## [1.9.2](https://github.com/dyte-in/device-emulator/compare/v1.9.1...v1.9.2) (2022-07-22)
+
+
+### Bug Fixes
+
+* use nullish operator ([bc14605](https://github.com/dyte-in/device-emulator/commit/bc14605e9cfb8469b151fee42892756ebd55ec9e))
+
 ## [1.9.1](https://github.com/dyte-in/device-emulator/compare/v1.9.0...v1.9.1) (2022-07-21)
 
 
