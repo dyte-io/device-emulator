@@ -2,8 +2,8 @@ function createVideoStream(props: EmulatedDeviceMetaProps) {
     const canvas = document.createElement('canvas');
     const capabilities = (<InputDeviceInfo>props.device).getCapabilities();
 
-    canvas.width = capabilities.width?.max || canvas.width;
-    canvas.height = capabilities.height?.max || canvas.height;
+    canvas.width = capabilities.width?.max ?? canvas.width;
+    canvas.height = capabilities.height?.max ?? canvas.height;
 
     const ctx = canvas.getContext('2d');
 
