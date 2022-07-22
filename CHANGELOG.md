@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/dyte-in/device-emulator/compare/v1.9.2...v1.10.0) (2022-07-22)
+
+
+### Features
+
+* implement unsilenceDevice and unbrickDevice methods ([a44e24e](https://github.com/dyte-in/device-emulator/commit/a44e24e59e2948c2dc294505e9b9bcdaffcd0018))
+
 ## [1.9.2](https://github.com/dyte-in/device-emulator/compare/v1.9.1...v1.9.2) (2022-07-22)
 
 
