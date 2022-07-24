@@ -30,8 +30,8 @@ declare global {
 
     interface MediaDevices {
         meta?: EmulatedDeviceMeta;
-        audioCapabilities: MediaTrackCapabilities;
-        videoCapabilities: MediaTrackCapabilities;
+        emulatedAudioDeviceCapabilities: MediaTrackCapabilities;
+        emulatedVideoDeviceCapabilities: MediaTrackCapabilities;
         removeEmulatedDevice(emulatorDeviceId: string): boolean;
         silenceDevice(emulatorDeviceId: string): boolean;
         unsilenceDevice(emulatorDeviceId: string): boolean;

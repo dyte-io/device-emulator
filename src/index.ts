@@ -1,13 +1,3 @@
 import './dom';
-import './HTMLAudioElement/setSinkId';
-import './MediaDevices/audioCapabilities';
-import './MediaDevices/videoCapabilities';
-import './MediaDevices/addEmulatedDevice';
-import './MediaDevices/enumerateDevices';
-import './MediaDevices/getDisplayMedia';
-import './MediaDevices/getUserMedia';
-import './MediaDevices/removeEmulatedDevice';
-import './MediaDevices/silenceDevice';
-import './MediaDevices/unsilenceDevice';
-import './MediaDevices/brickDevice';
-import './MediaDevices/unbrickDevice';
+import './polyfills/HTMLAudioElement';
+import './polyfills/MediaDevices';
