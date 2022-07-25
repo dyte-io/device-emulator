@@ -12,7 +12,7 @@ async function registerMediaStreamTrack(
 ) {
     const realConstraints = <MediaTrackConstraints>constraints[kind];
     const deviceId = <string>realConstraints.deviceId;
-    const props = <EmulatedDeviceMetaProps>meta[deviceId];
+    const props = meta[deviceId]!;
     const stream = (kind === 'audio' ? createAudioStream : createVideoStream)(props);
     const track = extractTrack(stream);
     const emulatedConstraints: MediaTrackConstraints = { deviceId: { exact: deviceId } };
@@ -61,13 +61,15 @@ async function registerMediaStreamTrack(
         groupId: props.device.groupId,
     });
 
-    track.applyConstraints = (mediaTrackConstraints?: MediaTrackConstraints) => {
+    track.applyConstraints = async (mediaTrackConstraints?: MediaTrackConstraints) => {
         Object.keys(emulatedConstraints).forEach((constraint) => {
             delete emulatedConstraints[<keyof MediaTrackConstraints>constraint];
         });
 
         if (!mediaTrackConstraints) {
-            return applyConstraints(mediaTrackConstraints);
+            await applyConstraints(mediaTrackConstraints);
+
+            return;
         }
 
         const deviceIdConstraint = (<ConstrainDOMStringParameters | undefined>(
@@ -79,7 +81,6 @@ async function registerMediaStreamTrack(
                 throw new OverconstrainedError('deviceId', `Invalid deviceId`);
             }
 
-            // eslint-disable-next-line no-param-reassign
             delete mediaTrackConstraints.deviceId;
 
             emulatedConstraints.deviceId = { exact: deviceId };
@@ -88,7 +89,7 @@ async function registerMediaStreamTrack(
         evaluateFacingModeConstraint(mediaTrackConstraints, emulatedConstraints, props);
         evaluateGroupIdConstraint(mediaTrackConstraints, emulatedConstraints, props);
 
-        return applyConstraints(mediaTrackConstraints);
+        await applyConstraints(mediaTrackConstraints);
     };
 
     props.tracks.push(track);

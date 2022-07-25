@@ -3,20 +3,20 @@ const originalSetSinkId = HTMLAudioElement.prototype.setSinkId;
 /* eslint-enable @typescript-eslint/unbound-method */
 
 class NewHTMLAudioElement {
-    setSinkId(this: HTMLAudioElement, sinkId: string) {
+    async setSinkId(this: HTMLAudioElement, sinkId: string) {
         const deviceMeta = navigator.mediaDevices.meta?.[sinkId];
 
         if (deviceMeta) {
             if (deviceMeta.device.kind !== 'audiooutput') {
-                return Promise.reject(new TypeError('NotFoundError: Requested device not found'));
+                throw new TypeError('NotFoundError: Requested device not found');
             }
 
             this.sinkId = sinkId;
 
-            return Promise.resolve();
+            return;
         }
 
-        return originalSetSinkId.call(this, sinkId);
+        await originalSetSinkId.call(this, sinkId);
     }
 }
 

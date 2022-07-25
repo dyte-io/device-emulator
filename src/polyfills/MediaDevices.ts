@@ -17,16 +17,12 @@ class NewMediaDevices {
         }
 
         const deviceIds = Object.keys(this.meta);
-
-        const emulatedDevices = deviceIds.map(
-            (deviceId) =>
-                (<EmulatedDeviceMetaProps>(<EmulatedDeviceMeta>this.meta)[deviceId]).device,
-        );
+        const emulatedDevices = deviceIds.map((deviceId) => this.meta![deviceId]!.device);
 
         return emulatedDevices.concat(realDevices);
     }
 
-    getDisplayMedia(this: MediaDevices, constraints?: DisplayMediaStreamConstraints) {
+    async getDisplayMedia(this: MediaDevices, constraints?: DisplayMediaStreamConstraints) {
         const originalFn = originalGetDisplayMedia.bind(this);
 
         if (!constraints || !this.meta) {
@@ -34,14 +30,13 @@ class NewMediaDevices {
         }
 
         if (!constraints.video) {
-            // eslint-disable-next-line no-param-reassign
             constraints.video = true;
         }
 
         return evaluateConstraints(originalFn, constraints, this.meta);
     }
 
-    getUserMedia(this: MediaDevices, constraints?: MediaStreamConstraints) {
+    async getUserMedia(this: MediaDevices, constraints?: MediaStreamConstraints) {
         const originalFn = originalGetUserMedia.bind(this);
 
         if (!constraints || !this.meta) {
@@ -54,7 +49,7 @@ class NewMediaDevices {
     addEmulatedDevice(
         this: MediaDevices,
         kind: MediaDeviceKind,
-        capabilities?: EmulatedVideoDeviceCapabilities | EmulatedAudioDeviceCapabilities,
+        capabilities?: EmulatedAudioDeviceCapabilities | EmulatedVideoDeviceCapabilities,
     ) {
         const deviceId = crypto.randomUUID();
         const label = `Emulated device of ${kind} kind - ${deviceId}`;
@@ -82,7 +77,7 @@ class NewMediaDevices {
                     max: capabilities?.frameRate?.max ?? frameRate?.max,
                     min: frameRate?.min,
                 },
-                facingMode: capabilities?.facingMode || facingMode,
+                facingMode: capabilities?.facingMode ?? facingMode,
             };
 
             (<InputDeviceInfo>device).getCapabilities = () => ({
@@ -121,7 +116,10 @@ class NewMediaDevices {
             return false;
         }
 
-        deviceMeta.tracks.forEach((track) => track.stop());
+        deviceMeta.tracks.forEach((track) => {
+            track.stop();
+        });
+
         deviceMeta.bricked = true;
         deviceMeta.tracks.length = 0;
 
@@ -135,8 +133,11 @@ class NewMediaDevices {
             return false;
         }
 
-        deviceMeta.tracks.forEach((track) => track.stop());
-        delete (<EmulatedDeviceMeta>this.meta)[emulatorDeviceId];
+        deviceMeta.tracks.forEach((track) => {
+            track.stop();
+        });
+
+        delete this.meta![emulatorDeviceId];
         this.dispatchEvent(new Event('devicechange'));
 
         return true;
@@ -196,5 +197,3 @@ MediaDevices.prototype.unsilenceDevice = NewMediaDevices.prototype.unsilenceDevi
 MediaDevices.prototype.emulatedAudioDeviceCapabilities = getEmulatedAudioDeviceCapabilities();
 MediaDevices.prototype.emulatedVideoDeviceCapabilities = getEmulatedVideoDeviceCapabilities();
 /* eslint-enable @typescript-eslint/unbound-method */
-
-export {};

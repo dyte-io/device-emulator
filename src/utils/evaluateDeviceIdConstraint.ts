@@ -24,13 +24,11 @@ function evaluateDeviceIdConstraint(
         throw new TypeError(`NotReadableError: Failed to allocate ${kind}source`);
     }
 
-    // eslint-disable-next-line no-param-reassign
     emulatedConstraints[kind] = {
         ...constraints,
         deviceId,
     };
 
-    // eslint-disable-next-line no-param-reassign
     delete realConstraints[kind];
 }
 

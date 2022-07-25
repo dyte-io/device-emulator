@@ -14,10 +14,8 @@ function evaluateFacingModeConstraint(
             throw new OverconstrainedError('facingMode', `Invalid facingMode`);
         }
 
-        // eslint-disable-next-line no-param-reassign
         emulatedConstraints.facingMode = { exact: facingMode };
 
-        // eslint-disable-next-line no-param-reassign
         delete realConstraints.facingMode;
     }
 }
