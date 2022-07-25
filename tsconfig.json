@@ -5,11 +5,12 @@
         "declaration": true,
         "emitDeclarationOnly": true,
         "isolatedModules": true,
-        "module": "ES2022",
+        "module": "es2022",
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "strict": true,
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "moduleResolution": "node"
     },
     "files": [
         "src/index.ts"

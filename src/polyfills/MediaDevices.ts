@@ -30,6 +30,7 @@ class NewMediaDevices {
         }
 
         if (!constraints.video) {
+            // NOTE(alias-rahil): getDisplayMedia always returns a videoTrack
             constraints.video = true;
         }
 
@@ -138,6 +139,7 @@ class NewMediaDevices {
         });
 
         delete this.meta![emulatorDeviceId];
+
         this.dispatchEvent(new Event('devicechange'));
 
         return true;

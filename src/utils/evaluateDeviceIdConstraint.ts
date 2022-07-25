@@ -1,3 +1,5 @@
+import extractDeviceId from './extractDeviceId';
+
 function evaluateDeviceIdConstraint(
     realConstraints: DisplayMediaStreamConstraints | MediaStreamConstraints,
     emulatedConstraints: DisplayMediaStreamConstraints | MediaStreamConstraints,
@@ -6,15 +8,21 @@ function evaluateDeviceIdConstraint(
 ) {
     const constraints = <MediaTrackConstraints | undefined>realConstraints[kind];
 
-    const deviceId = <string | undefined>(
-        (<ConstrainDOMStringParameters | undefined>constraints?.deviceId)?.exact
-    );
+    if (!constraints) {
+        return;
+    }
 
-    if (!deviceId) return;
+    const deviceId = extractDeviceId(constraints);
+
+    if (!deviceId) {
+        return;
+    }
 
     const deviceMeta = meta[deviceId];
 
-    if (!deviceMeta) return;
+    if (!deviceMeta) {
+        return;
+    }
 
     if (deviceMeta.device.kind !== `${kind}input`) {
         throw new OverconstrainedError('deviceId', `Invalid deviceId`);
@@ -24,10 +32,7 @@ function evaluateDeviceIdConstraint(
         throw new TypeError(`NotReadableError: Failed to allocate ${kind}source`);
     }
 
-    emulatedConstraints[kind] = {
-        ...constraints,
-        deviceId,
-    };
+    emulatedConstraints[kind] = realConstraints[kind];
 
     delete realConstraints[kind];
 }
