@@ -1,7 +1,5 @@
 declare global {
-    interface EmulatedAudioDeviceCapabilities {
-        [_: string]: never;
-    }
+    type EmulatedAudioDeviceCapabilities = Record<string, never>;
 
     interface EmulatedVideoDeviceCapabilities {
         height?: {
@@ -24,14 +22,12 @@ declare global {
         eventTarget: EventTarget;
     }
 
-    interface EmulatedDeviceMeta {
-        [deviceId: string]: undefined | EmulatedDeviceMetaProps;
-    }
+    type EmulatedDeviceMeta = Record<string, EmulatedDeviceMetaProps | undefined>;
 
     interface MediaDevices {
         meta?: EmulatedDeviceMeta;
-        audioCapabilities: MediaTrackCapabilities;
-        videoCapabilities: MediaTrackCapabilities;
+        emulatedAudioDeviceCapabilities: MediaTrackCapabilities;
+        emulatedVideoDeviceCapabilities: MediaTrackCapabilities;
         removeEmulatedDevice(emulatorDeviceId: string): boolean;
         silenceDevice(emulatorDeviceId: string): boolean;
         unsilenceDevice(emulatorDeviceId: string): boolean;

@@ -22,6 +22,8 @@
             "tabWidth": 4,
             "singleQuote": true,
             "trailingComma": "all"
-        }]
+        }],
+        "no-param-reassign": ["error", { "props": false }],
+        "@typescript-eslint/no-non-null-assertion": "off"
     }
 }
