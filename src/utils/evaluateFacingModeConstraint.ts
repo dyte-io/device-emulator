@@ -8,11 +8,7 @@ function evaluateFacingModeConstraint(
     const allFacingModes = (<InputDeviceInfo>props.device).getCapabilities().facingMode;
     const facingMode = extractConstraintProperty<string>(realConstraints, 'facingMode');
 
-    if (facingMode) {
-        if (!allFacingModes || !allFacingModes.includes(facingMode)) {
-            throw new OverconstrainedError('facingMode', `Invalid facingMode`);
-        }
-
+    if (allFacingModes?.includes(facingMode!)) {
         emulatedConstraints.facingMode = realConstraints.facingMode;
 
         delete realConstraints.facingMode;

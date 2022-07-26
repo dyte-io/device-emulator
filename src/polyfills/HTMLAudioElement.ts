@@ -6,11 +6,7 @@ class NewHTMLAudioElement {
     async setSinkId(this: HTMLAudioElement, sinkId: string) {
         const deviceMeta = navigator.mediaDevices.meta?.[sinkId];
 
-        if (deviceMeta) {
-            if (deviceMeta.device.kind !== 'audiooutput') {
-                throw new TypeError('NotFoundError: Requested device not found');
-            }
-
+        if (deviceMeta?.device.kind === 'audiooutput') {
             this.sinkId = sinkId;
 
             return;
