@@ -20,12 +20,8 @@ function evaluateDeviceIdConstraint(
 
     const deviceMeta = meta[deviceId];
 
-    if (!deviceMeta) {
+    if (deviceMeta?.device.kind !== `${kind}input`) {
         return;
-    }
-
-    if (deviceMeta.device.kind !== `${kind}input`) {
-        throw new OverconstrainedError('deviceId', `Invalid deviceId`);
     }
 
     if (deviceMeta.bricked) {

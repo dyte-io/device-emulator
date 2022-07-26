@@ -22,7 +22,7 @@ function createVideoStream(props: EmulatedDeviceMetaProps) {
         }
     };
 
-    let prev: number | undefined;
+    let prev: number;
 
     const drawFrame = (curr: number) => {
         if (prev === curr) {

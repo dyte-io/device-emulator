@@ -7,11 +7,7 @@ function evaluateGroupIdConstraint(
 ) {
     const groupId = extractConstraintProperty<string>(realConstraints, 'groupId');
 
-    if (groupId) {
-        if (groupId !== props.device.groupId) {
-            throw new OverconstrainedError('groupId', `Invalid groupId`);
-        }
-
+    if (groupId === props.device.groupId) {
         emulatedConstraints.groupId = realConstraints.groupId;
 
         delete realConstraints.groupId;

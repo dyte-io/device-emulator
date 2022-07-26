@@ -1,3 +1,4 @@
+import deepmerge from 'deepmerge';
 import evaluateConstraints from '../utils/evaluateConstraints';
 import getEmulatedAudioDeviceCapabilities from '../utils/getEmulatedAudioDeviceCapabilities';
 import getEmulatedVideoDeviceCapabilities from '../utils/getEmulatedVideoDeviceCapabilities';
@@ -60,30 +61,17 @@ class NewMediaDevices {
         if (kind === 'audioinput' || kind === 'videoinput') {
             Object.setPrototypeOf(device, InputDeviceInfo.prototype);
 
-            const { height, width, frameRate, facingMode, ...defaultCapabilities } =
+            const defaultCapabilities =
                 kind === 'audioinput'
                     ? this.emulatedAudioDeviceCapabilities
                     : this.emulatedVideoDeviceCapabilities;
 
-            const otherCapabilities = {
-                height: {
-                    max: capabilities?.height?.max ?? height?.max,
-                    min: height?.min,
-                },
-                width: {
-                    max: capabilities?.width?.max ?? width?.max,
-                    min: width?.min,
-                },
-                frameRate: {
-                    max: capabilities?.frameRate?.max ?? frameRate?.max,
-                    min: frameRate?.min,
-                },
-                facingMode: capabilities?.facingMode ?? facingMode,
-            };
+            const totalCapabilities = capabilities
+                ? deepmerge(defaultCapabilities, capabilities)
+                : defaultCapabilities;
 
             (<InputDeviceInfo>device).getCapabilities = () => ({
-                ...defaultCapabilities,
-                ...otherCapabilities,
+                ...totalCapabilities,
                 deviceId: device.deviceId,
                 groupId: device.groupId,
             });

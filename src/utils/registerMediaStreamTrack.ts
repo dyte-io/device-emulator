@@ -73,7 +73,7 @@ async function registerMediaStreamTrack(
 
         if (deviceIdConstraint) {
             if (deviceIdConstraint !== deviceId) {
-                throw new OverconstrainedError('deviceId', `Invalid deviceId`);
+                throw new OverconstrainedError('deviceId', `Invalid source ID for ${kind} device`);
             }
         }
 
