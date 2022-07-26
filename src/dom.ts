@@ -53,6 +53,15 @@ declare global {
         sinkId: string; //
         setSinkId(sinkId: string): Promise<void>; //
     }
+
+    interface LegacyMediaTrackConstraints {
+        sourceId?: string;
+    }
+
+    interface MediaTrackConstraints {
+        optional?: LegacyMediaTrackConstraints | LegacyMediaTrackConstraints[]; //
+        mandatory?: LegacyMediaTrackConstraints | LegacyMediaTrackConstraints[]; //
+    }
 }
 
 export {};

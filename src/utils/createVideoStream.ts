@@ -22,10 +22,12 @@ function createVideoStream(props: EmulatedDeviceMetaProps) {
         }
     };
 
-    let prev: number;
+    let prev: number | undefined;
 
     const drawFrame = (curr: number) => {
-        if (prev === curr) return;
+        if (prev === curr) {
+            return;
+        }
 
         ctx.putImageData(imageData, 0, 0);
 

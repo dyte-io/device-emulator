@@ -1,7 +1,10 @@
+import deepmerge from 'deepmerge';
 import createAudioStream from './createAudioStream';
 import createVideoStream from './createVideoStream';
 import evaluateFacingModeConstraint from './evaluateFacingModeConstraint';
 import evaluateGroupIdConstraint from './evaluateGroupIdConstraint';
+import extractConstraintProperty from './extractConstraintProperty';
+import extractDeviceId from './extractDeviceId';
 import extractTrack from './extractTrack';
 
 async function registerMediaStreamTrack(
@@ -11,35 +14,31 @@ async function registerMediaStreamTrack(
     meta: EmulatedDeviceMeta,
 ) {
     const realConstraints = <MediaTrackConstraints>constraints[kind];
-    const deviceId = <string>realConstraints.deviceId;
+    let emulatedConstraints: MediaTrackConstraints = {};
+    const deviceId = extractDeviceId(realConstraints, emulatedConstraints)!;
     const props = meta[deviceId]!;
     const stream = (kind === 'audio' ? createAudioStream : createVideoStream)(props);
     const track = extractTrack(stream);
-    const emulatedConstraints: MediaTrackConstraints = { deviceId: { exact: deviceId } };
     const allFacingModes = (<InputDeviceInfo>props.device).getCapabilities().facingMode;
 
     evaluateFacingModeConstraint(realConstraints, emulatedConstraints, props);
     evaluateGroupIdConstraint(realConstraints, emulatedConstraints, props);
 
-    delete realConstraints.deviceId;
-
     const originalConstraints = track.getConstraints();
 
-    await track.applyConstraints({ ...originalConstraints, ...realConstraints });
+    await track.applyConstraints(deepmerge(originalConstraints, realConstraints));
 
     const getConstraints = track.getConstraints.bind(track);
     const getSettings = track.getSettings.bind(track);
     const getCapabilities = track.getCapabilities.bind(track);
     const applyConstraints = track.applyConstraints.bind(track);
 
-    track.getConstraints = () => ({
-        ...getConstraints(),
-        ...emulatedConstraints,
-    });
+    track.getConstraints = () => deepmerge(getConstraints(), emulatedConstraints);
 
     track.getSettings = () => {
-        const facingModeConstraint = <ConstrainDOMStringParameters | undefined>(
-            emulatedConstraints.facingMode
+        const facingModeConstraint = extractConstraintProperty<string>(
+            emulatedConstraints,
+            'facingMode',
         );
 
         const defaultFacingMode = allFacingModes ? allFacingModes[0] : undefined;
@@ -48,9 +47,7 @@ async function registerMediaStreamTrack(
             ...getSettings(),
             deviceId,
             groupId: props.device.groupId,
-            facingMode: facingModeConstraint
-                ? <string>facingModeConstraint.exact
-                : defaultFacingMode,
+            facingMode: facingModeConstraint ?? defaultFacingMode,
         };
     };
 
@@ -62,34 +59,30 @@ async function registerMediaStreamTrack(
     });
 
     track.applyConstraints = async (mediaTrackConstraints?: MediaTrackConstraints) => {
-        Object.keys(emulatedConstraints).forEach((constraint) => {
-            delete emulatedConstraints[<keyof MediaTrackConstraints>constraint];
-        });
+        const newEmulatedConstraints = {};
 
         if (!mediaTrackConstraints) {
             await applyConstraints(mediaTrackConstraints);
 
+            emulatedConstraints = newEmulatedConstraints;
+
             return;
         }
 
-        const deviceIdConstraint = (<ConstrainDOMStringParameters | undefined>(
-            mediaTrackConstraints.deviceId
-        ))?.exact;
+        const deviceIdConstraint = extractDeviceId(mediaTrackConstraints, newEmulatedConstraints);
 
         if (deviceIdConstraint) {
             if (deviceIdConstraint !== deviceId) {
                 throw new OverconstrainedError('deviceId', `Invalid deviceId`);
             }
-
-            delete mediaTrackConstraints.deviceId;
-
-            emulatedConstraints.deviceId = { exact: deviceId };
         }
 
-        evaluateFacingModeConstraint(mediaTrackConstraints, emulatedConstraints, props);
-        evaluateGroupIdConstraint(mediaTrackConstraints, emulatedConstraints, props);
+        evaluateFacingModeConstraint(mediaTrackConstraints, newEmulatedConstraints, props);
+        evaluateGroupIdConstraint(mediaTrackConstraints, newEmulatedConstraints, props);
 
         await applyConstraints(mediaTrackConstraints);
+
+        emulatedConstraints = newEmulatedConstraints;
     };
 
     props.tracks.push(track);
