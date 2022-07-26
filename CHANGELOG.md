@@ -1,3 +1,10 @@
+## [1.11.1](https://github.com/dyte-in/device-emulator/compare/v1.11.0...v1.11.1) (2022-07-26)
+
+
+### Bug Fixes
+
+* handle errors properly ([f44cc59](https://github.com/dyte-in/device-emulator/commit/f44cc59cc422bbc21a146c784fb2ff8491bf454e))
+
 # [1.11.0](https://github.com/dyte-in/device-emulator/compare/v1.10.0...v1.11.0) (2022-07-26)
 
 
