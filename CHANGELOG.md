@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/dyte-in/device-emulator/compare/v1.10.0...v1.11.0) (2022-07-26)
+
+
+### Features
+
+* add support older constraints specs ([a5a60ee](https://github.com/dyte-in/device-emulator/commit/a5a60ee6cc95ebf1c602dd5f278bb400b60717b3))
+
 # [1.10.0](https://github.com/dyte-in/device-emulator/compare/v1.9.2...v1.10.0) (2022-07-22)
 
 
