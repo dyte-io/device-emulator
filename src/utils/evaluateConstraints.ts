@@ -10,8 +10,19 @@ async function evaluateConstraints(
 ) {
     const emulatedConstraints: DisplayMediaStreamConstraints | MediaStreamConstraints = {};
 
-    evaluateDeviceIdConstraint(realConstraints, emulatedConstraints, 'audio', meta);
-    evaluateDeviceIdConstraint(realConstraints, emulatedConstraints, 'video', meta);
+    const audioDeviceId = evaluateDeviceIdConstraint(
+        realConstraints,
+        emulatedConstraints,
+        'audio',
+        meta,
+    );
+
+    const videoDeviceId = evaluateDeviceIdConstraint(
+        realConstraints,
+        emulatedConstraints,
+        'video',
+        meta,
+    );
 
     if (Object.keys(emulatedConstraints).length === 0) {
         const stream = await originalFn(realConstraints);
@@ -21,12 +32,24 @@ async function evaluateConstraints(
 
     const mediaStream = new MediaStream();
 
-    if (emulatedConstraints.audio) {
-        await registerMediaStreamTrack(mediaStream, emulatedConstraints, 'audio', meta);
+    if (audioDeviceId) {
+        await registerMediaStreamTrack(
+            audioDeviceId,
+            mediaStream,
+            emulatedConstraints,
+            'audio',
+            meta,
+        );
     }
 
-    if (emulatedConstraints.video) {
-        await registerMediaStreamTrack(mediaStream, emulatedConstraints, 'video', meta);
+    if (videoDeviceId) {
+        await registerMediaStreamTrack(
+            videoDeviceId,
+            mediaStream,
+            emulatedConstraints,
+            'video',
+            meta,
+        );
     }
 
     if (realConstraints.audio || realConstraints.video) {

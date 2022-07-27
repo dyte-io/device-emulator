@@ -9,19 +9,19 @@ function evaluateDeviceIdConstraint(
     const constraints = <MediaTrackConstraints | undefined>realConstraints[kind];
 
     if (!constraints) {
-        return;
+        return null;
     }
 
     const deviceId = extractDeviceId(constraints);
 
     if (!deviceId) {
-        return;
+        return null;
     }
 
     const deviceMeta = meta[deviceId];
 
     if (deviceMeta?.device.kind !== `${kind}input`) {
-        return;
+        return null;
     }
 
     if (deviceMeta.bricked) {
@@ -31,6 +31,8 @@ function evaluateDeviceIdConstraint(
     emulatedConstraints[kind] = realConstraints[kind];
 
     delete realConstraints[kind];
+
+    return deviceId;
 }
 
 export default evaluateDeviceIdConstraint;

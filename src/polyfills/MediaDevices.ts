@@ -27,7 +27,9 @@ class NewMediaDevices {
         const originalFn = originalGetDisplayMedia.bind(this);
 
         if (!constraints || !this.meta) {
-            return originalFn(constraints);
+            const mediaStream = await originalFn(constraints);
+
+            return mediaStream;
         }
 
         if (!constraints.video) {
@@ -35,17 +37,23 @@ class NewMediaDevices {
             constraints.video = true;
         }
 
-        return evaluateConstraints(originalFn, constraints, this.meta);
+        const mediaStream = await evaluateConstraints(originalFn, constraints, this.meta);
+
+        return mediaStream;
     }
 
     async getUserMedia(this: MediaDevices, constraints?: MediaStreamConstraints) {
         const originalFn = originalGetUserMedia.bind(this);
 
         if (!constraints || !this.meta) {
-            return originalFn(constraints);
+            const mediaStream = await originalFn(constraints);
+
+            return mediaStream;
         }
 
-        return evaluateConstraints(originalFn, constraints, this.meta);
+        const mediaStream = await evaluateConstraints(originalFn, constraints, this.meta);
+
+        return mediaStream;
     }
 
     addEmulatedDevice(

@@ -8,19 +8,21 @@ import extractDeviceId from './extractDeviceId';
 import extractTrack from './extractTrack';
 
 async function registerMediaStreamTrack(
+    deviceId: string,
     mediaStream: MediaStream,
     constraints: DisplayMediaStreamConstraints | MediaStreamConstraints,
     kind: 'audio' | 'video',
     meta: EmulatedDeviceMeta,
 ) {
     const realConstraints = <MediaTrackConstraints>constraints[kind];
-    let emulatedConstraints: MediaTrackConstraints = {};
-    const deviceId = extractDeviceId(realConstraints, emulatedConstraints)!;
     const props = meta[deviceId]!;
     const stream = (kind === 'audio' ? createAudioStream : createVideoStream)(props);
     const track = extractTrack(stream);
     const allFacingModes = (<InputDeviceInfo>props.device).getCapabilities().facingMode;
 
+    let emulatedConstraints: MediaTrackConstraints = {};
+
+    extractDeviceId(realConstraints, emulatedConstraints)!;
     evaluateFacingModeConstraint(realConstraints, emulatedConstraints, props);
     evaluateGroupIdConstraint(realConstraints, emulatedConstraints, props);
 
@@ -41,7 +43,7 @@ async function registerMediaStreamTrack(
             'facingMode',
         );
 
-        const defaultFacingMode = allFacingModes ? allFacingModes[0] : undefined;
+        const defaultFacingMode = allFacingModes?.[0];
 
         return {
             ...getSettings(),
@@ -69,12 +71,10 @@ async function registerMediaStreamTrack(
             return;
         }
 
-        const deviceIdConstraint = extractDeviceId(mediaTrackConstraints, newEmulatedConstraints);
+        const deviceIdConstraint = extractDeviceId(mediaTrackConstraints);
 
-        if (deviceIdConstraint) {
-            if (deviceIdConstraint !== deviceId) {
-                throw new OverconstrainedError('deviceId', `Invalid source ID for ${kind} device`);
-            }
+        if (deviceIdConstraint === deviceId) {
+            extractDeviceId(mediaTrackConstraints, emulatedConstraints);
         }
 
         evaluateFacingModeConstraint(mediaTrackConstraints, newEmulatedConstraints, props);
