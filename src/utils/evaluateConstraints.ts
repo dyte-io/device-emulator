@@ -5,10 +5,10 @@ async function evaluateConstraints(
     originalFn:
         | typeof MediaDevices.prototype.getDisplayMedia
         | typeof MediaDevices.prototype.getUserMedia,
-    realConstraints: DisplayMediaStreamConstraints | MediaStreamConstraints,
+    realConstraints: MediaStreamConstraints,
     meta: EmulatedDeviceMeta,
 ) {
-    const emulatedConstraints: DisplayMediaStreamConstraints | MediaStreamConstraints = {};
+    const emulatedConstraints: MediaStreamConstraints = {};
 
     const audioDeviceId = evaluateDeviceIdConstraint(
         realConstraints,

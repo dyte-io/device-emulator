@@ -9,10 +9,14 @@
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "strict": true,
+        "resolveJsonModule": true,
         "skipLibCheck": true,
-        "moduleResolution": "node"
+        "moduleResolution": "node",
+        "removeComments": true,
     },
     "files": [
-        "src/index.ts"
+        "src/index.ts",
+        "vite.config.ts",
+        "vite.iife.config.ts"
     ]
 }

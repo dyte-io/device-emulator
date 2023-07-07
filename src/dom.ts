@@ -64,4 +64,11 @@ declare global {
     }
 }
 
+MediaStreamTrack.prototype.getCapabilities =
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    MediaStreamTrack.prototype.getCapabilities ||
+    function getCapabilitiesPlaceholder() {
+        return {};
+    };
+
 export {};

@@ -1,15 +1,29 @@
 {
   "name": "@dyte-in/device-emulator",
-  "main": "dist/device-emulator.es.js",
+  "main": "./dist/index.cjs.js",
+  "browser": "./dist/index.iife.js",
+  "module": "./dist/index.es.js",
   "types": "dist/index.d.ts",
   "version": "1.11.2",
   "description": "Adds methods to emulate various devices on MediaDevices class.",
+  "exports": {
+    ".": {
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.cjs.js",
+      "types": "./types/index.d.ts"
+    },
+    "./inlined": {
+      "types": "./types/index.d.ts",
+      "default": "./dist/index.iife.js"
+    }
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint --ignore-path .gitignore --max-warnings 0 --ext .ts .",
     "lint:fix": "eslint --ignore-path .gitignore --max-warnings 0 --ext .ts --fix .",
     "prepare": "is-ci || husky install",
-    "build": "vite build && tsc"
+    "build": "tsc && vite build && VITE_IIFE=true vite build -c vite.iife.config.ts",
+    "dev": "npm run build && vite"
   },
   "repository": {
     "type": "git",
@@ -58,6 +72,7 @@
     }
   },
   "dependencies": {
-    "deepmerge": "^4.2.2"
+    "deepmerge": "^4.2.2",
+    "worker-timers": "^7.0.73"
   }
 }

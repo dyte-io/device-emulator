@@ -10,7 +10,7 @@ import extractTrack from './extractTrack';
 async function registerMediaStreamTrack(
     deviceId: string,
     mediaStream: MediaStream,
-    constraints: DisplayMediaStreamConstraints | MediaStreamConstraints,
+    constraints: MediaStreamConstraints,
     kind: 'audio' | 'video',
     meta: EmulatedDeviceMeta,
 ) {
@@ -28,7 +28,19 @@ async function registerMediaStreamTrack(
 
     const originalConstraints = track.getConstraints();
 
-    await track.applyConstraints(deepmerge(originalConstraints, realConstraints));
+    const trackConstraintsToApply = deepmerge(originalConstraints, realConstraints);
+    try {
+        // TODO(ravindra-dyte): Do impact analysis of this change
+        await track.applyConstraints(trackConstraintsToApply);
+    } catch (ex) {
+        // eslint-disable-next-line no-console
+        console.error(
+            `DyteDeviceEmulator:: track.applyConstraints failed for ${JSON.stringify(
+                trackConstraintsToApply,
+            )}`,
+            ex,
+        );
+    }
 
     const getConstraints = track.getConstraints.bind(track);
     const getSettings = track.getSettings.bind(track);
