@@ -1,3 +1,10 @@
+## [1.11.3](https://github.com/dyte-in/device-emulator/compare/v1.11.2...v1.11.3) (2023-07-11)
+
+
+### Bug Fixes
+
+* **video-emulator:** improved video emulator feed, fixed constraints issue with firefox ([fb28b14](https://github.com/dyte-in/device-emulator/commit/fb28b149661b3f27520b70c5c66580a1fef1cbf8))
+
 ## [1.11.2](https://github.com/dyte-in/device-emulator/compare/v1.11.1...v1.11.2) (2022-07-27)
 
 
