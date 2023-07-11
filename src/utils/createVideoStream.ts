@@ -1,9 +1,12 @@
+import * as WorkerTimers from 'worker-timers';
+
 function createVideoStream(props: EmulatedDeviceMetaProps) {
     const canvas = document.createElement('canvas');
+    const canvasFramePaintStartTime = new Date().getTime();
     const capabilities = (<InputDeviceInfo>props.device).getCapabilities();
 
-    canvas.width = capabilities.width?.max ?? canvas.width;
-    canvas.height = capabilities.height?.max ?? canvas.height;
+    canvas.width = capabilities.width?.max ?? 640;
+    canvas.height = capabilities.height?.max ?? 480;
 
     const ctx = canvas.getContext('2d');
 
@@ -11,32 +14,36 @@ function createVideoStream(props: EmulatedDeviceMetaProps) {
         throw new TypeError('UnknownError: an unknown error occurred');
     }
 
-    const imageData = new ImageData(canvas.width, canvas.height);
+    const drawFrame = () => {
+        if (!props.silent) {
+            ctx.fillStyle = 'green';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    const populateImageData = () => {
-        for (let i = 0; i < imageData.data.length; i += 4) {
-            imageData.data[i] = +!props.silent * Math.floor(Math.random() * 256);
-            imageData.data[i + 1] = +!props.silent * Math.floor(Math.random() * 256);
-            imageData.data[i + 2] = +!props.silent * Math.floor(Math.random() * 256);
-            imageData.data[i + 3] = 255;
+            ctx.font = '50px Arial';
+            ctx.fillStyle = 'blue';
+            ctx.textAlign = 'center';
+            let secondsLapsed = new Date().getTime() - canvasFramePaintStartTime;
+            /**
+             * NOTE(ravindra-dyte):
+             * We need 10 frames per second to avoid major canvas redrawings.
+             * Because latency would be near impossible to go below 100 ms, there is no point of drawing more than 10 fps.
+             * Diving ms by 100 to get how many 100ms redraws are over
+             */
+            secondsLapsed /= 100;
+            /**
+             * NOTE(ravindra-dyte):
+             * Tessaract js can't detect numbers lower than 100 with accuracy.
+             * Adding the padding of 1000 to give it a break
+             */
+            secondsLapsed = Math.floor(secondsLapsed + 1000);
+            ctx.fillText(secondsLapsed.toString(), canvas.width / 2, canvas.height / 2);
+        } else {
+            ctx.fillStyle = 'red';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
     };
 
-    let prev: number | undefined;
-
-    const drawFrame = (curr: number) => {
-        if (prev !== curr) {
-            ctx.putImageData(imageData, 0, 0);
-
-            prev = curr;
-        }
-
-        requestAnimationFrame(drawFrame);
-    };
-
-    populateImageData();
-    requestAnimationFrame(drawFrame);
-    props.eventTarget.addEventListener('toggleSilence', populateImageData);
+    WorkerTimers.setInterval(drawFrame, 100);
 
     return canvas.captureStream(capabilities.frameRate?.max);
 }

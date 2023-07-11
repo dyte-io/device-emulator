@@ -23,7 +23,7 @@ class NewMediaDevices {
         return emulatedDevices.concat(realDevices);
     }
 
-    async getDisplayMedia(this: MediaDevices, constraints?: DisplayMediaStreamConstraints) {
+    async getDisplayMedia(this: MediaDevices, constraints?: MediaStreamConstraints) {
         const originalFn = originalGetDisplayMedia.bind(this);
 
         if (!constraints || !this.meta) {
@@ -67,7 +67,10 @@ class NewMediaDevices {
         const device = { deviceId, kind, label, groupId, toJSON: () => device };
 
         if (kind === 'audioinput' || kind === 'videoinput') {
-            Object.setPrototypeOf(device, InputDeviceInfo.prototype);
+            // TODO(ravindra-dyte): Do impact analysis of this change
+            if (typeof InputDeviceInfo !== 'undefined') {
+                Object.setPrototypeOf(device, InputDeviceInfo.prototype);
+            }
 
             const defaultCapabilities =
                 kind === 'audioinput'

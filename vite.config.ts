@@ -1,10 +1,12 @@
-const pkg = require('./package');
+import pkg from './package.json';
 
 const config = {
     build: {
+        emptyOutDir: true,
         lib: {
             entry: 'src/index.ts',
-            formats: ['es'],
+            formats: ['es', 'cjs'],
+            fileName: (format: string) => `index.${format}.js`,
         },
         outDir: 'dist',
         rollupOptions: {
@@ -13,4 +15,4 @@ const config = {
     },
 };
 
-module.exports = config;
+export default config;
