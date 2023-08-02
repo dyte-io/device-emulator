@@ -1,5 +1,5 @@
 {
-  "name": "@dyte-in/device-emulator",
+  "name": "@dytesdk/device-emulator",
   "main": "./dist/index.cjs.js",
   "browser": "./dist/index.iife.js",
   "module": "./dist/index.es.js",
