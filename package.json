@@ -1,10 +1,10 @@
 {
-  "name": "@dyte-in/device-emulator",
+  "name": "@dytesdk/device-emulator",
   "main": "./dist/index.cjs.js",
   "browser": "./dist/index.iife.js",
   "module": "./dist/index.es.js",
   "types": "dist/index.d.ts",
-  "version": "1.11.3",
+  "version": "1.11.5",
   "description": "Adds methods to emulate various devices on MediaDevices class.",
   "exports": {
     ".": {
@@ -27,15 +27,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dyte-in/device-emulator.git"
+    "url": "git+https://github.com/dyte-io/device-emulator.git"
   },
   "keywords": [],
-  "author": "https://github.com/dyte-in",
+  "author": "https://github.com/dyte-io",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/dyte-in/device-emulator/issues"
+    "url": "https://github.com/dyte-io/device-emulator/issues"
   },
-  "homepage": "https://github.com/dyte-in/device-emulator#readme",
+  "homepage": "https://github.com/dyte-io/device-emulator#readme",
   "devDependencies": {
     "@commitlint/cli": "^16.0.1",
     "@commitlint/config-conventional": "^16.0.0",
@@ -74,5 +74,6 @@
   "dependencies": {
     "deepmerge": "^4.2.2",
     "worker-timers": "^7.0.73"
-  }
+  },
+  "files": ["/dist"]
 }
