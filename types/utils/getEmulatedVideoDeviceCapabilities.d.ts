@@ -1,0 +1,2 @@
+declare function getEmulatedVideoDeviceCapabilities(): MediaTrackCapabilities;
+export default getEmulatedVideoDeviceCapabilities;

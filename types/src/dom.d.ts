@@ -1,6 +1,5 @@
 declare global {
     type EmulatedAudioDeviceCapabilities = Record<string, never>;
-
     interface EmulatedVideoDeviceCapabilities {
         height?: {
             max?: number;
@@ -13,7 +12,6 @@ declare global {
         };
         facingMode?: string[];
     }
-
     interface EmulatedDeviceMetaProps {
         tracks: MediaStreamTrack[];
         fail: boolean;
@@ -21,9 +19,7 @@ declare global {
         device: MediaDeviceInfo;
         eventTarget: EventTarget;
     }
-
     type EmulatedDeviceMeta = Record<string, EmulatedDeviceMetaProps | undefined>;
-
     interface MediaDevices {
         meta?: EmulatedDeviceMeta;
         emulatedAudioDeviceCapabilities: MediaTrackCapabilities;
@@ -31,42 +27,23 @@ declare global {
         removeEmulatedDevice(emulatorDeviceId: string): boolean;
         silenceDevice(emulatorDeviceId: string, silent: boolean): boolean;
         failDevice(emulatorDeviceId: string, fail: boolean): boolean;
-
         addEmulatedDevice(kind: 'audiooutput'): string;
-        addEmulatedDevice(
-            kind: 'audioinput',
-            capabilities?: EmulatedAudioDeviceCapabilities,
-        ): string;
-        addEmulatedDevice(
-            kind: 'videoinput',
-            capabilities?: EmulatedVideoDeviceCapabilities,
-        ): string;
+        addEmulatedDevice(kind: 'audioinput', capabilities?: EmulatedAudioDeviceCapabilities): string;
+        addEmulatedDevice(kind: 'videoinput', capabilities?: EmulatedVideoDeviceCapabilities): string;
     }
-
     interface InputDeviceInfo {
-        getCapabilities(): MediaTrackCapabilities; //
+        getCapabilities(): MediaTrackCapabilities;
     }
-
     interface HTMLMediaElement {
-        sinkId: string; //
-        setSinkId(sinkId: string): Promise<void>; //
+        sinkId: string;
+        setSinkId(sinkId: string): Promise<void>;
     }
-
     interface LegacyMediaTrackConstraints {
         sourceId?: string;
     }
-
     interface MediaTrackConstraints {
-        optional?: LegacyMediaTrackConstraints | LegacyMediaTrackConstraints[]; //
-        mandatory?: LegacyMediaTrackConstraints | LegacyMediaTrackConstraints[]; //
+        optional?: LegacyMediaTrackConstraints | LegacyMediaTrackConstraints[];
+        mandatory?: LegacyMediaTrackConstraints | LegacyMediaTrackConstraints[];
     }
 }
-
-MediaStreamTrack.prototype.getCapabilities =
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    MediaStreamTrack.prototype.getCapabilities ||
-    function getCapabilitiesPlaceholder() {
-        return {};
-    };
-
 export {};

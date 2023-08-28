@@ -24,7 +24,7 @@ function evaluateDeviceIdConstraint(
         return null;
     }
 
-    if (deviceMeta.bricked) {
+    if (deviceMeta.fail) {
         throw new TypeError(`NotReadableError: Failed to allocate ${kind}source`);
     }
 
