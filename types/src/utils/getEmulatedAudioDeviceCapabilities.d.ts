@@ -1,2 +1,0 @@
-declare function getEmulatedAudioDeviceCapabilities(): MediaTrackCapabilities;
-export default getEmulatedAudioDeviceCapabilities;
