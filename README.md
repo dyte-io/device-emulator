@@ -7,9 +7,9 @@
   <h2 align="center">Device Emulator by Dyte</h3>
 
   <p align="center">
-    Dyte's homegrown solution to mimic media devices in browser
+    Dyte's browser media devices emulation toolkit
     <br />
-    <a href="https://docs.dyte.io"><strong>Explore the docs »</strong></a>
+    <a href="https://docs.dyte.io/community-packages/device-emulator"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://device-emulator.vercel.app/">View Demo</a>
@@ -24,7 +24,6 @@
 
 ## Table of Contents
 
-- [Table of Contents](#table-of-contents)
 - [About The Project](#about-the-project)
 - [Examples](#examples)
 - [Built With](#built-with)
@@ -38,20 +37,35 @@
 
 ## About The Project
 
-For a product, integration tests are one of the crucial part that improves quality & stability. For a WebRTC based solution like Dyte, having integration tests that can test multi-user call with Audio/Video on is necessary.
+For a WebRTC based solution like Dyte, having integration tests that can test multi-user call with Audio/Video on is necessary. Part of the integration tests is the ability to attest different media behaviours. 
 
-For an end user, sharing a camera & mic is easy. For this, browsers expose APIs such as enumerateDevices & getUserMedia on MediaDevices interface, on which user interfaces can be built easily.
+These are not straightforward as Media devices are usually not available in virtualised / testing environments, these interfaces (`getUserMedia`) are a reflection of actual hardware connected to the device, and therefore it is difficult to test real world scenarios in a software test run. 
 
-Access to camera & mic prompts the users to allow permissions to do so. This works great as long as an end-user is using the product and actively allowing permissions and selecting devices, However this makes it impossible to write integration tests because for integration tests there is no active user and you need to somehow allow permissions programmatically which at the moment of writing this README is not reliably supported in modern tools like Playwright.
+Even if you have devices available, scenarios such as 
 
-Even if we can somehow allow permissions, The next set of questions would be: What would the video & audio feed look like? Can we customize the feed? Can we use the feed to detect delays between a video feed producer and consumer? How do we test multiple devices? How do we test media ejection on the fly? How do we test addition of a new device?
+  - A new microphone device is plugged in, does my application switch the input to the new device
+  - How does my application handle hardware failure
 
+become difficult to test automatically
 
-Dyte's Device Emulator is a solution that answers all these questions and provides a easier way to mimic, add, remove devices & their feed. 
+Dyte's Device Emulator is a solution for the above problems. It provides ways to add, remove media devices and mimic specific real world behaviour. By using this emulation toolkit, QA engineers, developers, and testers can ensure that WebRTC applications deliver a consistent and high-quality user experience across different hardware setups.
 
-## Examples
+## Usage
 
-Find the guides and examples here [https://docs.dyte.io/community-packages/device-emulator](https://docs.dyte.io/community-packages/device-emulator)
+### Installation 
+
+```
+npm install @dytesdk/device-emulator
+
+```
+
+### Adding a virtual device
+
+```
+navigator.mediaDevices.addEmulatedDevice('videoinput');
+```
+
+Checkout the docs for complete guides and examples [https://docs.dyte.io/community-packages/device-emulator](https://docs.dyte.io/community-packages/device-emulator)
 
 ## Built With
 
