@@ -12,7 +12,7 @@
     <a href="https://docs.dyte.io"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://app.dyte.io">View Demo</a>
+    <a href="https://device-emulator.vercel.app/">View Demo</a>
     ·
     <a href="https://github.com/dyte-io/device-emulator/issues">Report Bug</a>
     ·
@@ -24,13 +24,10 @@
 
 ## Table of Contents
 
-- [About the Project](#about-the-project)
-  - [Built With](#built-with)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-- [Usage](#usage)
-- [Version History](#version-history)
+- [Table of Contents](#table-of-contents)
+- [About The Project](#about-the-project)
+- [Examples](#examples)
+- [Built With](#built-with)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [Support](#support)
@@ -52,107 +49,15 @@ Even if we can somehow allow permissions, The next set of questions would be: Wh
 
 Dyte's Device Emulator is a solution that answers all these questions and provides a easier way to mimic, add, remove devices & their feed. 
 
-### Built With
+## Examples
+
+Find the guides and examples here [https://docs.dyte.io/community-packages/device-emulator](https://docs.dyte.io/community-packages/device-emulator)
+
+## Built With
 
 - Canvas
 - MediaDevices interface
 - Typescript
-
-<!-- GETTING STARTED -->
-
-## Getting Started
-
-To get a local copy up and running, please follow these simple steps.
-
-### Prerequisites
-
-- Node.js
-- NPM
-
-### Installation
-
-1. Clone the repo
-
-```sh
-git clone https://github.com/dyte-io/device-emulator.git
-```
-
-2. Install NPM packages
-
-```sh
-npm install
-```
-
-<!-- USAGE EXAMPLES -->
-
-## Usage
-
-To test quickly, Run Device Emulator with a Dyte meeting
-
-```sh
-npm run dev
-```
-
-This would open a tab with localhost:3000 in it.
-
-http://localhost:3000/?authToken=PUT_PARTICIPANT_AUTH_TOKEN_HERE
-
-Replace PUT_PARTICIPANT_AUTH_TOKEN_HERE with actual participant token.
-
-In case you are new to Dyte, Please make sure you've read the [Getting Started with Dyte](https://docs.dyte.io/getting-started) topic and completed the following steps:
-1. [Create a Dyte Developer Account](https://dev.dyte.io/)
-2. Create Presets. Dyte also includes the following pre-configured presets for group call and webinar. You can simply use the default preset such as `group_call_host` if you don't wish to create one.
-3. Create a Dyte Meeting
-4. Add Participant to the meeting
-
-Adding participant to meeting would give you the desired auth token.
-
-Once you are in the Dyte meeting, Go to Settings -> Video -> Select the emulated device. Turn the video on, if not on already. That's it.
-
-In case you want to integrate the device-emulator solution in your product without a Dyte meeting, Add the below script tags in your code:
-
-```html
-    <script>
-        window.addEventListener('dyte.deviceEmulatorLoaded', () => {
-            navigator.mediaDevices.addEmulatedDevice('videoinput');
-        });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/@dytesdk/device-emulator/dist/index.iife.js"></script>
-```
-
-This would add a fake videoinput emulated device.
-
-## Examples
-
-### Wait for the device emulator to load.
-```js
-window.addEventListener('dyte.deviceEmulatorLoaded', () => {
-    console.log('Device emulator loaded.')
-});
-```
-
-### Add a fake video input device
-```js
-navigator.mediaDevices.addEmulatedDevice('videoinput');
-```
-
-### Add a fake audio input device
-```js
-navigator.mediaDevices.addEmulatedDevice('audioinput');
-```
-
-### Remove a fake input device
-Get the emulated device id using `enumerateDevices` api.
-
-```js
-navigator.mediaDevices.enumerateDevices()
-```
-
-Find the device that you want to remove, keep the device id handy.
-
-```js
-navigator.mediaDevices.removeEmulatedDevice('PUT_EMULATED_DEVICE_ID_HERE');
-```
 
 <!-- ROADMAP -->
 
@@ -189,7 +94,7 @@ Distributed under the Apache License, Version 2.0. See [`LICENSE`](./LICENSE) fo
 
 ## About
 
-`device-emulator` is created & maintained by Dyte, Inc. You can find us on Twitter - [@dyte_io](https://twitter.com/dyte_io) or write to us at `dev [at] dyte.io`.
+`device-emulator` is created & maintained by dyte, Inc. You can find us on Twitter - [@dyte_io](https://twitter.com/dyte_io) or write to us at `dev [at] dyte.io`.
 
 The names and logos for Dyte are trademarks of dyte, Inc.
 
