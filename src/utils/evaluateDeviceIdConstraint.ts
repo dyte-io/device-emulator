@@ -1,8 +1,8 @@
 import extractDeviceId from './extractDeviceId';
 
 function evaluateDeviceIdConstraint(
-    realConstraints: DisplayMediaStreamConstraints | MediaStreamConstraints,
-    emulatedConstraints: DisplayMediaStreamConstraints | MediaStreamConstraints,
+    realConstraints: MediaStreamConstraints,
+    emulatedConstraints: MediaStreamConstraints,
     kind: 'audio' | 'video',
     meta: EmulatedDeviceMeta,
 ) {
