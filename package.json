@@ -4,7 +4,7 @@
   "browser": "./dist/index.iife.js",
   "module": "./dist/index.es.js",
   "types": "./types/index.d.ts",
-  "version": "1.11.6",
+  "version": "1.12.0",
   "description": "Adds methods to emulate various devices on MediaDevices class.",
   "exports": {
     ".": {
@@ -75,5 +75,5 @@
     "deepmerge": "^4.2.2",
     "worker-timers": "^7.0.73"
   },
-  "files": ["/dist"]
+  "files": ["/dist", "/types"]
 }
