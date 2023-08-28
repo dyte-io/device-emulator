@@ -3,8 +3,9 @@
         "target": "es2022",
         "outDir": "dist",
         "declaration": true,
+        "declarationDir": "types",
         "emitDeclarationOnly": true,
-        "isolatedModules": true,
+        "isolatedModules": false,
         "module": "es2022",
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
@@ -14,9 +15,9 @@
         "moduleResolution": "node",
         "removeComments": true,
     },
-    "files": [
-        "src/index.ts",
+    "include": ["src/**/*.ts"],
+    "exclude": [
+        "./node_modules",
         "vite.config.ts",
-        "vite.iife.config.ts"
     ]
 }
