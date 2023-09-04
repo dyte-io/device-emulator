@@ -7,7 +7,7 @@ const MUTE_BUTTON_STYLE = "bg-green-600 text-white";
 const STOP_BUTTON_STYLE = "bg-orange-600 text-white";
 interface Props {
     device: MediaDeviceInfo;
-    meta: EmulatedDeviceMetaProps | undefined;
+    meta: EmulatedDeviceMetaProps | null;
     onFailToggle: () => void;
     onSilenceToggle: () => void;
     onDelete: () => void;
@@ -16,7 +16,7 @@ interface Props {
 export default function DeviceActions({device, meta, onFailToggle, onDelete, onSilenceToggle}: Props) {
     const isVirtualDevice = deviceEmulatorHelper.isVirtualDevice(device);
 
-    if (meta === undefined) {
+    if (!meta) {
         return null;
     }
 

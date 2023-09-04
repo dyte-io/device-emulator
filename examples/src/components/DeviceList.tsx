@@ -11,6 +11,12 @@ const NORMAL_BUTTON_CLASS = "w-full text-left px-3 py-2 text-sm font-semibold te
 export default function DeviceList(
     { devices, previewDevice, currentDevice}: Props
 ) {
+    if(!devices?.length){
+        return (<div className="flex flex-col">
+            <h3 className="pl-3 font-bold">No virtual devices to show. Please add a virtual device first.</h3>
+        </div>);
+    }
+
     return (
         <div className="flex flex-col">
             <h3 className="pl-3 font-bold">Select a device</h3>
