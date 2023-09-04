@@ -3,6 +3,7 @@
         "target": "es2022",
         "outDir": "dist",
         "declaration": true,
+        "declarationDir": "types",
         "emitDeclarationOnly": true,
         "isolatedModules": true,
         "module": "es2022",
@@ -15,8 +16,6 @@
         "removeComments": true,
     },
     "files": [
-        "src/index.ts",
-        "vite.config.ts",
-        "vite.iife.config.ts"
+        "src/index.ts"
     ]
 }

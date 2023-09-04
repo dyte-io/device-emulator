@@ -1,0 +1,9 @@
+#root {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+}
+
+.selector {
+  @apply  bg-white text-gray-700 px-3 py-2 text-sm font-semibold  focus-visible:outline-indigo-600;
+}

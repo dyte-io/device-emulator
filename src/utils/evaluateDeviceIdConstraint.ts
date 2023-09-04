@@ -1,8 +1,8 @@
 import extractDeviceId from './extractDeviceId';
 
 function evaluateDeviceIdConstraint(
-    realConstraints: DisplayMediaStreamConstraints | MediaStreamConstraints,
-    emulatedConstraints: DisplayMediaStreamConstraints | MediaStreamConstraints,
+    realConstraints: MediaStreamConstraints,
+    emulatedConstraints: MediaStreamConstraints,
     kind: 'audio' | 'video',
     meta: EmulatedDeviceMeta,
 ) {
@@ -24,7 +24,7 @@ function evaluateDeviceIdConstraint(
         return null;
     }
 
-    if (deviceMeta.bricked) {
+    if (deviceMeta.fail) {
         throw new TypeError(`NotReadableError: Failed to allocate ${kind}source`);
     }
 

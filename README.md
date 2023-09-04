@@ -7,12 +7,12 @@
   <h2 align="center">Device Emulator by Dyte</h3>
 
   <p align="center">
-    Dyte's homegrown solution to mimic media devices in browser
+    Dyte's browser media devices emulation toolkit
     <br />
-    <a href="https://docs.dyte.io"><strong>Explore the docs »</strong></a>
+    <a href="https://docs.dyte.io/community-packages/device-emulator"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://app.dyte.io">View Demo</a>
+    <a href="https://device-emulator.vercel.app/">View Demo</a>
     ·
     <a href="https://github.com/dyte-io/device-emulator/issues">Report Bug</a>
     ·
@@ -24,13 +24,9 @@
 
 ## Table of Contents
 
-- [About the Project](#about-the-project)
-  - [Built With](#built-with)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-- [Usage](#usage)
-- [Version History](#version-history)
+- [About The Project](#about-the-project)
+- [Examples](#examples)
+- [Built With](#built-with)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [Support](#support)
@@ -41,118 +37,41 @@
 
 ## About The Project
 
-For a product, integration tests are one of the crucial part that improves quality & stability. For a WebRTC based solution like Dyte, having integration tests that can test multi-user call with Audio/Video on is necessary.
+For a WebRTC based solution like Dyte, having integration tests that can test multi-user call with Audio/Video on is necessary. Part of the integration tests is the ability to attest different media behaviours. 
 
-For an end user, sharing a camera & mic is easy. For this, browsers expose APIs such as enumerateDevices & getUserMedia on MediaDevices interface, on which user interfaces can be built easily.
+These are not straightforward as Media devices are usually not available in virtualised / testing environments, these interfaces (`getUserMedia`) are a reflection of actual hardware connected to the device, and therefore it is difficult to test real world scenarios in a software test run. 
 
-Access to camera & mic prompts the users to allow permissions to do so. This works great as long as an end-user is using the product and actively allowing permissions and selecting devices, However this makes it impossible to write integration tests because for integration tests there is no active user and you need to somehow allow permissions programmatically which at the moment of writing this README is not reliably supported in modern tools like Playwright.
+Even if you have devices available, scenarios such as 
 
-Even if we can somehow allow permissions, The next set of questions would be: What would the video & audio feed look like? Can we customize the feed? Can we use the feed to detect delays between a video feed producer and consumer? How do we test multiple devices? How do we test media ejection on the fly? How do we test addition of a new device?
+  - A new microphone device is plugged in, does my application switch the input to the new device
+  - How does my application handle hardware failure
 
+become difficult to test automatically
 
-Dyte's Device Emulator is a solution that answers all these questions and provides a easier way to mimic, add, remove devices & their feed. 
+Dyte's Device Emulator is a solution for the above problems. It provides ways to add, remove media devices and mimic specific real world behaviour. By using this emulation toolkit, QA engineers, developers, and testers can ensure that WebRTC applications deliver a consistent and high-quality user experience across different hardware setups.
 
-### Built With
+## Usage
+
+### Installation 
+
+```
+npm install @dytesdk/device-emulator
+
+```
+
+### Adding a virtual device
+
+```
+navigator.mediaDevices.addEmulatedDevice('videoinput');
+```
+
+Checkout the docs for complete guides and examples [https://docs.dyte.io/community-packages/device-emulator](https://docs.dyte.io/community-packages/device-emulator)
+
+## Built With
 
 - Canvas
 - MediaDevices interface
 - Typescript
-
-<!-- GETTING STARTED -->
-
-## Getting Started
-
-To get a local copy up and running, please follow these simple steps.
-
-### Prerequisites
-
-- Node.js
-- NPM
-
-### Installation
-
-1. Clone the repo
-
-```sh
-git clone https://github.com/dyte-io/device-emulator.git
-```
-
-2. Install NPM packages
-
-```sh
-npm install
-```
-
-<!-- USAGE EXAMPLES -->
-
-## Usage
-
-To test quickly, Run Device Emulator with a Dyte meeting
-
-```sh
-npm run dev
-```
-
-This would open a tab with localhost:3000 in it.
-
-http://localhost:3000/?authToken=PUT_PARTICIPANT_AUTH_TOKEN_HERE
-
-Replace PUT_PARTICIPANT_AUTH_TOKEN_HERE with actual participant token.
-
-In case you are new to Dyte, Please make sure you've read the [Getting Started with Dyte](https://docs.dyte.io/getting-started) topic and completed the following steps:
-1. [Create a Dyte Developer Account](https://dev.dyte.io/)
-2. Create Presets. Dyte also includes the following pre-configured presets for group call and webinar. You can simply use the default preset such as `group_call_host` if you don't wish to create one.
-3. Create a Dyte Meeting
-4. Add Participant to the meeting
-
-Adding participant to meeting would give you the desired auth token.
-
-Once you are in the Dyte meeting, Go to Settings -> Video -> Select the emulated device. Turn the video on, if not on already. That's it.
-
-In case you want to integrate the device-emulator solution in your product without a Dyte meeting, Add the below script tags in your code:
-
-```html
-    <script>
-        window.addEventListener('dyte.deviceEmulatorLoaded', () => {
-            navigator.mediaDevices.addEmulatedDevice('videoinput');
-        });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/@dytesdk/device-emulator/dist/index.iife.js"></script>
-```
-
-This would add a fake videoinput emulated device.
-
-## Examples
-
-### Wait for the device emulator to load.
-```js
-window.addEventListener('dyte.deviceEmulatorLoaded', () => {
-    console.log('Device emulator loaded.')
-});
-```
-
-### Add a fake video input device
-```js
-navigator.mediaDevices.addEmulatedDevice('videoinput');
-```
-
-### Add a fake audio input device
-```js
-navigator.mediaDevices.addEmulatedDevice('audioinput');
-```
-
-### Remove a fake input device
-Get the emulated device id using `enumerateDevices` api.
-
-```js
-navigator.mediaDevices.enumerateDevices()
-```
-
-Find the device that you want to remove, keep the device id handy.
-
-```js
-navigator.mediaDevices.removeEmulatedDevice('PUT_EMULATED_DEVICE_ID_HERE');
-```
 
 <!-- ROADMAP -->
 
@@ -189,7 +108,7 @@ Distributed under the Apache License, Version 2.0. See [`LICENSE`](./LICENSE) fo
 
 ## About
 
-`device-emulator` is created & maintained by Dyte, Inc. You can find us on Twitter - [@dyte_io](https://twitter.com/dyte_io) or write to us at `dev [at] dyte.io`.
+`device-emulator` is created & maintained by dyte, Inc. You can find us on Twitter - [@dyte_io](https://twitter.com/dyte_io) or write to us at `dev [at] dyte.io`.
 
 The names and logos for Dyte are trademarks of dyte, Inc.
 

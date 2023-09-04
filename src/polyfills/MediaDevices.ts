@@ -92,7 +92,7 @@ class NewMediaDevices {
 
         const meta = {
             tracks: [],
-            bricked: false,
+            fail: false,
             silent: false,
             device,
             eventTarget: new EventTarget(),
@@ -109,7 +109,7 @@ class NewMediaDevices {
         return deviceId;
     }
 
-    brickDevice(this: MediaDevices, emulatorDeviceId: string) {
+    failDevice(this: MediaDevices, emulatorDeviceId: string, fail: boolean) {
         const deviceMeta = this.meta?.[emulatorDeviceId];
 
         if (!deviceMeta) {
@@ -118,11 +118,14 @@ class NewMediaDevices {
 
         deviceMeta.tracks.forEach((track) => {
             track.stop();
+            track.dispatchEvent(new Event('ended'));
         });
 
-        deviceMeta.bricked = true;
+        deviceMeta.fail = fail;
         deviceMeta.tracks.length = 0;
-
+        if (this.meta) {
+            this.meta[emulatorDeviceId] = deviceMeta;
+        }
         return true;
     }
 
@@ -135,6 +138,7 @@ class NewMediaDevices {
 
         deviceMeta.tracks.forEach((track) => {
             track.stop();
+            track.dispatchEvent(new Event('ended'));
         });
 
         delete this.meta![emulatorDeviceId];
@@ -144,40 +148,14 @@ class NewMediaDevices {
         return true;
     }
 
-    silenceDevice(this: MediaDevices, emulatorDeviceId: string) {
+    silenceDevice(this: MediaDevices, emulatorDeviceId: string, silent: boolean) {
         const deviceMeta = this.meta?.[emulatorDeviceId];
 
         if (!deviceMeta) {
             return false;
         }
 
-        deviceMeta.silent = true;
-
-        deviceMeta.eventTarget.dispatchEvent(new Event('toggleSilence'));
-
-        return true;
-    }
-
-    unbrickDevice(this: MediaDevices, emulatorDeviceId: string) {
-        const deviceMeta = this.meta?.[emulatorDeviceId];
-
-        if (!deviceMeta) {
-            return false;
-        }
-
-        deviceMeta.bricked = false;
-
-        return true;
-    }
-
-    unsilenceDevice(this: MediaDevices, emulatorDeviceId: string) {
-        const deviceMeta = this.meta?.[emulatorDeviceId];
-
-        if (!deviceMeta) {
-            return false;
-        }
-
-        deviceMeta.silent = false;
+        deviceMeta.silent = silent;
 
         deviceMeta.eventTarget.dispatchEvent(new Event('toggleSilence'));
 
@@ -190,11 +168,9 @@ MediaDevices.prototype.enumerateDevices = NewMediaDevices.prototype.enumerateDev
 MediaDevices.prototype.getDisplayMedia = NewMediaDevices.prototype.getDisplayMedia;
 MediaDevices.prototype.getUserMedia = NewMediaDevices.prototype.getUserMedia;
 MediaDevices.prototype.addEmulatedDevice = NewMediaDevices.prototype.addEmulatedDevice;
-MediaDevices.prototype.brickDevice = NewMediaDevices.prototype.brickDevice;
+MediaDevices.prototype.failDevice = NewMediaDevices.prototype.failDevice;
 MediaDevices.prototype.removeEmulatedDevice = NewMediaDevices.prototype.removeEmulatedDevice;
 MediaDevices.prototype.silenceDevice = NewMediaDevices.prototype.silenceDevice;
-MediaDevices.prototype.unbrickDevice = NewMediaDevices.prototype.unbrickDevice;
-MediaDevices.prototype.unsilenceDevice = NewMediaDevices.prototype.unsilenceDevice;
 MediaDevices.prototype.emulatedAudioDeviceCapabilities = getEmulatedAudioDeviceCapabilities();
 MediaDevices.prototype.emulatedVideoDeviceCapabilities = getEmulatedVideoDeviceCapabilities();
 /* eslint-enable @typescript-eslint/unbound-method */
