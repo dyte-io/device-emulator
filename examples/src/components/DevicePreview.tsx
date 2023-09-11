@@ -7,7 +7,7 @@ import DeviceActions from "./DeviceActions";
 
 interface Props {
   device: MediaDeviceInfo;
-  meta: EmulatedDeviceMetaProps | undefined;
+  meta: EmulatedDeviceMetaProps | null;
   onFailToggle: () => void;
   onSilenceToggle: () => void;
   onDelete: () => void;
@@ -20,7 +20,6 @@ export default function DevicePreview({
   onSilenceToggle,
   onDelete
 }: Props) {
-
   let preview = null;
   // call 3 methods based on kind of device
   if (device.kind === "audioinput") {
