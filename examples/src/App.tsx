@@ -1,84 +1,87 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css'
 import deviceEmulatorHelper from './helper';
 import DeviceList from './components/DeviceList';
 import DevicePreview from './components/DevicePreview';
 
 function App() {
-  const requested = useRef(false);
+  const [deviceListenerAdded, setDeviceListenerAdded] = useState(false);
   const [deviceType, setDeviceType] = useState<'audioinput' | 'audiooutput' | 'videoinput'>("audioinput");
   const [currentDevice, setCurrentDevice] = useState<MediaDeviceInfo | null>(null);
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
-  const [meta, setMeta] = useState<EmulatedDeviceMetaProps | undefined>(undefined);
+  const [meta, setMeta] = useState<EmulatedDeviceMetaProps | null>(null);
 
   useEffect(() => {
-    requested.current = true;
-    navigator.mediaDevices.enumerateDevices().then((devices) => {
-      if (requested.current) {
-        setDevices(devices);
-      }
-    });
-
+    if(deviceListenerAdded){
+      return;
+    }
     navigator.mediaDevices.addEventListener("devicechange", () => {
       updateDevices();
     });
+    setDeviceListenerAdded(true);
+  }, [deviceListenerAdded]);
 
-    return () => {
-      requested.current = false;
+  const updateMeta = () => {
+    if (!currentDevice || !deviceEmulatorHelper.isVirtualDevice(currentDevice)){
+      setMeta(null);
+      return;
     };
-  }, []);
+    const newMeta = deviceEmulatorHelper.getDeviceMeta(currentDevice.deviceId);
+    if(newMeta){
+      setMeta({...newMeta});
+    } else {
+      setMeta(null);
+    }
+  };
 
   useEffect(() => {
     updateMeta();
   }, [currentDevice]);
 
-  const updateMeta = useCallback(() => {
-    if (!currentDevice || !deviceEmulatorHelper.isVirtualDevice(currentDevice)) return;
-    const m = deviceEmulatorHelper.getDeviceMeta(currentDevice.deviceId);
-    console.log('meta', m);
-    setMeta(m);
-  },[currentDevice]);
 
-  const updateDevices = useCallback(async () => {
-    const devices = await navigator.mediaDevices.enumerateDevices();
+
+  const updateDevices = async () => {
+    let devices = await navigator.mediaDevices.enumerateDevices();
+    devices = devices?.filter(device => device.label?.includes('Emulated device of'));
     setDevices(devices);
-  },[]);
+  };
 
-  const addDevice = useCallback(async () => {
+  const addDevice = async () => {
     const newDeviceId = deviceEmulatorHelper.addDevice(deviceType);
-    await updateDevices();
-    const current = devices.find((d) => d.deviceId === newDeviceId);
-    if (current) {
-      setCurrentDevice(current);
+    if(!currentDevice){
+      const allDevices = await navigator.mediaDevices.enumerateDevices();
+      const newDevice = allDevices.find((d) => d.deviceId === newDeviceId);
+      if (newDevice) {
+        setCurrentDevice(newDevice);
+      }
     }
-  },[deviceType, devices, updateDevices]);
+  };
 
-  const deleteDevice = useCallback(async () => {
+  const deleteDevice = async () => {
     if (!currentDevice) return;
     deviceEmulatorHelper.removeDevice(currentDevice.deviceId);
-    updateMeta();
-  },[currentDevice, updateMeta]);
+    setCurrentDevice(null);
+  };
 
-  const toggleSilence = useCallback(() => {
+  const toggleSilence = () => {
     if (!currentDevice) return;
     deviceEmulatorHelper.toggleSilence(currentDevice.deviceId);
     updateMeta();
-  },[currentDevice, updateMeta]);
+  };
 
-  const toggleFailDevice = useCallback(() => {
+  const toggleFailDevice = () => {
     if (!currentDevice) return;
     deviceEmulatorHelper.toggleFailDevice(currentDevice.deviceId);
     updateMeta();
-  },[currentDevice, updateMeta]);
+  };
 
 
-  const updateCurrentDevice = useCallback((deviceId: string) => {
+  const updateCurrentDevice = (deviceId: string) => {
     const current = devices.find((d) => d.deviceId === deviceId);
-    console.log(current);
     if (current) {
       setCurrentDevice(current);
     }
-  },[devices]);
+  };
   
 
   return (
@@ -128,6 +131,13 @@ function App() {
                   onDelete={deleteDevice} 
                 />
               )}
+              {(devices?.length && !currentDevice) ? (
+                <div className="flex flex-col">
+                  <h3 className="pl-3">
+                    Please select a device from the device list to preview.
+                  </h3>
+                </div>
+              ): ''}
             </div>
           </div>
 
