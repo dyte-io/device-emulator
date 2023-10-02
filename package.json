@@ -23,7 +23,7 @@
     "lint:fix": "eslint --ignore-path .gitignore --max-warnings 0 --ext .ts --fix .",
     "prepare": "is-ci || husky install",
     "build": "tsc && vite build && VITE_IIFE=true vite build -c vite.iife.config.ts",
-    "dev": "npm run build && vite"
+    "dev": "cd examples && npm run dev"
   },
   "repository": {
     "type": "git",
