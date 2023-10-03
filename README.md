@@ -50,19 +50,38 @@ become difficult to test automatically
 
 Dyte's Device Emulator is a solution for the above problems. It provides ways to add, remove media devices and mimic specific real world behaviour. By using this emulation toolkit, QA engineers, developers, and testers can ensure that WebRTC applications deliver a consistent and high-quality user experience across different hardware setups.
 
+## Running locally
+
+### Install dependencies
+```
+npm i
+```
+
+### Run the development server
+```
+npm run dev
+```
+
+NOTE: This demo app currently expects dyte authtokens for legacy reasons, while running locally you can just remove the part where the dyte sdk is initalized and run the commands you want to from the console
+
 ## Usage
-
-### Installation 
-
-```
-npm install @dytesdk/device-emulator
-
-```
 
 ### Adding a virtual device
 
 ```
 navigator.mediaDevices.addEmulatedDevice('videoinput');
+```
+
+### Failing a virtual device
+
+```
+navigator.mediaDevices.failDevice(deviceId, true);
+```
+
+### Silencing a virtual device
+
+```
+navigator.mediaDevices.silenceDevice(deviceId, true);
 ```
 
 Checkout the docs for complete guides and examples [https://docs.dyte.io/community-packages/device-emulator](https://docs.dyte.io/community-packages/device-emulator)
@@ -80,7 +99,7 @@ Checkout the docs for complete guides and examples [https://docs.dyte.io/communi
 See the [open issues](https://github.com/dyte-io/device-emulator/issues) for a list of proposed features (and known issues).
 
 Few upcoming features are:
-1. Use any video file as a feed instead of Dyte's default video feed.
+1. Use any video file as a feed instead of default video feed.
 2. Audio file support
 3. Browser-like constraints
 4. Custom device names
