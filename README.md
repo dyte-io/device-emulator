@@ -25,7 +25,8 @@
 ## Table of Contents
 
 - [About The Project](#about-the-project)
-- [Examples](#examples)
+- [Running Locally](#running-locally)
+- [Usage](#usage)
 - [Built With](#built-with)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
@@ -37,27 +38,29 @@
 
 ## About The Project
 
-For a WebRTC based solution like Dyte, having integration tests that can test multi-user call with Audio/Video on is necessary. Part of the integration tests is the ability to attest different media behaviours. 
+For a WebRTC based solution like Dyte, having integration tests that can test multi-user call with Audio/Video on is necessary. Part of the integration tests is the ability to attest different media behaviours.
 
-These are not straightforward as Media devices are usually not available in virtualised / testing environments, these interfaces (`getUserMedia`) are a reflection of actual hardware connected to the device, and therefore it is difficult to test real world scenarios in a software test run. 
+These are not straightforward as Media devices are usually not available in virtualised / testing environments, these interfaces (`getUserMedia`) are a reflection of actual hardware connected to the device, and therefore it is difficult to test real world scenarios in a software test run.
 
-Even if you have devices available, scenarios such as 
+Even if you have devices available, scenarios such as
 
-  - A new microphone device is plugged in, does my application switch the input to the new device
-  - How does my application handle hardware failure
+- A new microphone device is plugged in, does my application switch the input to the new device
+- How does my application handle hardware failure
 
 become difficult to test automatically
 
 Dyte's Device Emulator is a solution for the above problems. It provides ways to add, remove media devices and mimic specific real world behaviour. By using this emulation toolkit, QA engineers, developers, and testers can ensure that WebRTC applications deliver a consistent and high-quality user experience across different hardware setups.
 
-## Running locally
+## Running Locally
 
 ### Install dependencies
+
 ```
 npm i
 ```
 
 ### Run the development server
+
 ```
 npm run dev
 ```
@@ -99,6 +102,7 @@ Checkout the docs for complete guides and examples [https://docs.dyte.io/communi
 See the [open issues](https://github.com/dyte-io/device-emulator/issues) for a list of proposed features (and known issues).
 
 Few upcoming features are:
+
 1. Use any video file as a feed instead of default video feed.
 2. Audio file support
 3. Browser-like constraints
@@ -113,6 +117,7 @@ Contributions are what make the open source community such an amazing place to b
 You are requested to follow the contribution guidelines specified in [CONTRIBUTING.md](./CONTRIBUTING.md) and code of conduct at [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) while contributing to the project :smile:.
 
 ## Support
+
 Contributions, issues, and feature requests are welcome!
 Give a ⭐️ if you like this project!
 
